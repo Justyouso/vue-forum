@@ -22,9 +22,9 @@ export function validateEmailPwdCode(value,type){
   }else if (type=='pwd'){
     reg = /^(?!\D+$)(?![^a-zA-Z]+$)\S{6,20}$/;
   }else if (type=='code'){
-    reg = /^[a-z0-9]{6}$/;
+    reg = /^[a-zA-Z0-9]{6}$/;
   }else{
-    return false
+    reg = /^[a-zA-Z0-9]{6,20}$/;
   }
   return reg.test(value) ? true:false
 }

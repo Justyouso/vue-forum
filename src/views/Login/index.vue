@@ -5,9 +5,14 @@
         <li v-for="item in menuTab" :key="item.id" :class="{'current': item.current}" @click="toggleMenu(item)">{{item.txt}}</li>
       </ul>
       <el-form :model="ruleForm" status-icon :rules="rules" ref="loginForm" class="login-form" size="medium">
-        <el-form-item prop="username" class="item-form">
-          <label for="username">邮箱</label>
-          <el-input id="username" type="text" v-model="ruleForm.username" autocomplete="off"></el-input>
+        <el-form-item prop="email" class="item-form">
+          <label for="email">邮箱</label>
+          <el-input id="email" type="text" v-model="ruleForm.email" autocomplete="off"></el-input>
+        </el-form-item>
+
+        <el-form-item prop="username" class="item-form" v-show="model === 'register'">
+          <label for="username" >用户名</label>
+          <el-input id="username" type="text" v-model="ruleForm.username" autocomplete="off" minlength="6" maxlength="20"></el-input>
         </el-form-item>
 
         <el-form-item prop="password" class="item-form">
@@ -20,7 +25,7 @@
           <el-input id="passwords" type="text" v-model="ruleForm.passwords" autocomplete="off" minlength="6" maxlength="20"></el-input>
         </el-form-item>
 
-        <el-form-item prop="code" class="item-form">
+        <el-form-item prop="code" class="item-form"  v-show="model === 'register'">
           <label for="code">验证码</label>
           <el-row :gutter="10">
             <el-col :span="15">
@@ -33,7 +38,7 @@
         </el-form-item>
 
         <el-form-item>
-          <el-button type="danger" @click="submitForm('loginForm')" class="login-btn block" :disabled="loginButtonStatus">{{ model === 'login' ? "登陆":"注册" }}</el-button>
+          <el-button type="danger" @click="submitForm('loginForm')" class="login-btn block">{{ model === 'login' ? "登陆":"注册" }}</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -49,12 +54,30 @@ export default {
   name: "login",
   setup(props,{ refs, root }){
     
-     //用户名验证
-    let validateUsername = (rule, value, callback) => {
+     //邮箱验证
+    let validateEmail = (rule, value, callback) => {
       if (value === '') {
-        callback(new Error('请输入用户名'));
+        callback(new Error('请输入邮箱'));
       } else if (!validateEmailPwdCode(value,'email')){ // 验证邮箱各格式
         callback(new Error('邮箱格式错误'))
+      }else{
+        callback();
+      }
+    };
+
+    //用户名验证
+    let validateUsername = (rule, value, callback) => {
+      // 如果模块值为login,则直接通过,因为login没有重复密码
+      if (model.value=='login') {callback();}
+      //过滤掉特殊字符
+      // 重新绑定form表单中的Username
+      ruleForm.username = stripscript(value)
+      // 将过滤的字符重新赋值给value
+      value = stripscript(value)
+      if (!value) {
+        return callback(new Error('请输入用户名'));
+      }else if (!validateEmailPwdCode(value,'username')){ //验证用户名
+        callback(new Error('密码为6至20位数字+字母'))
       }else{
         callback();
       }
@@ -96,6 +119,7 @@ export default {
     };
     //验证码验证
     let validateCode = (rule, value, callback) => {
+      if (model.value=='login') {callback();}
       //过滤掉特殊字符
       // 重新绑定form表单中的code
       ruleForm.code = stripscript(value)
@@ -115,13 +139,11 @@ export default {
      */
     // 登陆按钮
     const menuTab = reactive([
-      {txt:"登陆",current: true, type:'login'},
+      {txt:"登陆",current: false, type:'login'},
       {txt:"注册",current: false, type:'register'},
     ])
     // 模块值
     const model= ref('login')
-    // 登陆按钮禁用状态
-    const loginButtonStatus = ref(true);
     // 验证码按钮状态和显示文本
     const codeButtonStatus = reactive(
       {
@@ -131,13 +153,17 @@ export default {
     )
     // 表单绑定数据
     const ruleForm = reactive({
-      username: '',
+      email: '',
+      username:'',
       password: '',
       passwords:'',
       code: ''
     })
     // 表单验证
     const rules= reactive({
+      email: [
+        { validator: validateEmail, trigger: 'blur' }
+      ],
       username: [
         { validator: validateUsername, trigger: 'blur' }
       ],
@@ -188,12 +214,12 @@ export default {
     // 获取验证码
     const getSms = (()=>{
       // 验证邮箱
-      if (ruleForm.username == ''){
+      if (ruleForm.email == ''){
         root.$message.error("邮箱不能为空!")
         return false
       }
       // 验证邮箱格式
-      if (!validateEmailPwdCode(ruleForm.username,'email')){
+      if (!validateEmailPwdCode(ruleForm.email,'email')){
         root.$message.error("邮箱格式错误!")
         return false
       }
@@ -202,15 +228,13 @@ export default {
       updateCodeButtonStatus({status:true,text:"发送中"})
       
       // 请求接口
-      let requestData = {email: ruleForm.username,}
+      let requestData = {email: ruleForm.email,}
       GetSms(requestData).then(resoponse =>{
         let data = resoponse.data
         root.$message({
           message:data.message,
           type:"success"
         })
-        // 启动登陆或注册按钮
-        loginButtonStatus.value=false
         // 调用定时器，倒计时
         countDown(60)
       }).catch(error =>{
@@ -246,7 +270,6 @@ export default {
 
     // 提交表单
     const submitForm = (formName =>{
-      console.log()
       refs[formName].validate((valid) => {
         if (valid) {
           // 判断是登陆还是注册 
@@ -261,10 +284,10 @@ export default {
     // 登陆操作
     const login= (() =>{
       let requestData = {
-            username: ruleForm.username,
-            password: sha1(ruleForm.password),
+            email: ruleForm.email,
+            password: ruleForm.password,
             code: ruleForm.code,
-            module: 'login'
+            // module: 'login'
           }
       Login(requestData).then(responce =>{
         // let data = resoponse.data
@@ -279,17 +302,18 @@ export default {
           name: "Console"
         })
       }).catch(error =>{
-
+        console.log(error)
       })
     })
 
     // 注册操作
     const register= (() =>{
       let requestData = {
-            username: ruleForm.username,
-            password: sha1(ruleForm.password),
+            email: ruleForm.email,
+            username:ruleForm.username,
+            password: ruleForm.password,
             code: ruleForm.code,
-            module: 'register'
+            // module: 'register'
           }
       // console.log(menuTab[0])
       // toggleMenu(menuTab[0])
@@ -323,7 +347,6 @@ export default {
     return {
       menuTab,
       model,
-      loginButtonStatus,
       codeButtonStatus,
       ruleForm,
       rules,

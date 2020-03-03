@@ -21,7 +21,7 @@ export function GetSms(data){
 export function Login(data){
   return service.request({
     method: "post",
-    url: "/login/",
+    url: "/user/login",
     data
     // 左边data是变量名，右边data是参数名，参数名和变量名相同，可止写成一个
   })
@@ -33,7 +33,7 @@ export function Login(data){
 export function Register(data){
   return service.request({
     method: "post",
-    url: "/register/",
+    url: "/user/register",
     data
     // 左边data是变量名，右边data是参数名，参数名和变量名相同，可止写成一个
   })
