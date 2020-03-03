@@ -3,12 +3,14 @@ import { Message } from 'element-ui';
 
 // 获取开发环境中 vue.config.js中的proxy中的target
 const BASEURL =  process.env.NODE_ENV === 'production' ? 'dist' : '/devApi';
+// const BASEURL = "http://119.3.230.228:8999"
+console.log(BASEURL)
 // 创建axios
 const service = axios.create({
   // 请求基础地址
   baseURL: BASEURL,  // http://localhost:8080/devApi/  == http://www.web-jshtml.cn/productapi
   // 请求超时
-  timeout: 1000,
+  timeout: 1000*60,
 });
 
 // 添加请求拦截器
@@ -35,6 +37,7 @@ service.interceptors.response.use(function (response) {
   }
 }, function (error) {
   // 对响应错误做点什么
+  console.log(error)
   return Promise.reject(error);
 });
 

@@ -202,7 +202,7 @@ export default {
       updateCodeButtonStatus({status:true,text:"发送中"})
       
       // 请求接口
-      let requestData = {username: ruleForm.username, module: model.value}
+      let requestData = {email: ruleForm.username,}
       GetSms(requestData).then(resoponse =>{
         let data = resoponse.data
         root.$message({
