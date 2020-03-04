@@ -228,7 +228,7 @@ export default {
       updateCodeButtonStatus({status:true,text:"发送中"})
       
       // 请求接口
-      let requestData = {email: ruleForm.email,}
+      let requestData = {email: ruleForm.email, module: model.value}
       GetSms(requestData).then(resoponse =>{
         let data = resoponse.data
         root.$message({
@@ -287,7 +287,7 @@ export default {
             email: ruleForm.email,
             password: ruleForm.password,
             code: ruleForm.code,
-            // module: 'login'
+            module: 'login'
           }
       Login(requestData).then(responce =>{
         // let data = resoponse.data
@@ -313,7 +313,7 @@ export default {
             username:ruleForm.username,
             password: ruleForm.password,
             code: ruleForm.code,
-            // module: 'register'
+            module: 'register'
           }
       // console.log(menuTab[0])
       // toggleMenu(menuTab[0])
