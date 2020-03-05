@@ -5,6 +5,7 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
+    userInfo:{},
     isCollapse: false,
     count:10
   },
@@ -15,7 +16,10 @@ export default new Vuex.Store({
   mutations: {
     SET_COUNT(state,value){
       state.count = value
-    }
+    },
+    SET_USERINFO(state,value){
+      state.userInfo = value
+    },
   },
   actions: {},
   modules: {}

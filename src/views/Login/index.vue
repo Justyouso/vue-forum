@@ -286,20 +286,22 @@ export default {
       let requestData = {
             email: ruleForm.email,
             password: ruleForm.password,
-            code: ruleForm.code,
-            module: 'login'
           }
-      Login(requestData).then(responce =>{
-        // let data = resoponse.data
+      Login(requestData).then(response =>{
+
+        let data = response.data.data
+        console.log(data);
+        
+        root.$store.commit('SET_USERINFO',data)
         // root.$message({
         //   message:data.message,
         //   type:"success"
         // })
         // 清除验证码按钮和倒计时
         clearCountDown()
-        // 跳转到其他页面
+        // 跳转到最新文章
         root.$router.push({
-          name: "Console"
+          name: "ArticleNew"
         })
       }).catch(error =>{
         console.log(error)

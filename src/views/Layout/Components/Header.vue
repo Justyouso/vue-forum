@@ -1,22 +1,61 @@
 <template>
   <div id="header-wrap">
-    <div class="pull-left header-icon">
-      <svg-icon iconClass="menu" className="menu" />
+    <div class="pull-left">
+      <div class="pull-left header-icon">
+        <router-link  class="mid-wrap pull-left" to="/articleNew">
+          <svg-icon iconClass="logo" className="logo" />
+        </router-link>
+        
+      </div>
+      <div class="header-mid pull-right">
+        <!-- <div class="mid-wrap pull-left"> -->
+          <router-link  class="mid-wrap pull-left" to="/articleFound">
+          <svg-icon iconClass="find" className="find" />
+          发现
+          </router-link>
+        <!-- </div> -->
+        <div class="mid-wrap pull-left">
+          <router-link  class="mid-wrap pull-left" to="/userAttention">
+          <svg-icon iconClass="attention" className="attention" />关注
+          </router-link>
+            
+        </div>
+      </div>
     </div>
     <div class="pull-right">
-      <div class="user-info pull-left">
-          管理员
+      <!-- <div class="pull-left">
+        <template>
+          <el-select
+            v-model="value"
+            filterable
+            remote
+            placeholder="请输入关键词"
+            :remote-method="remoteMethod"
+            :loading="loading"
+          ></el-select>
+        </template>
+      </div> -->
+      <div class="user-info pull-left">{{userinfo.role}}</div>
+      <div class="header-icon pull-left">
+        <svg-icon iconClass="exit" className="exit" />
       </div>
-      <div class="header-icon pull-left"><svg-icon iconClass="exit" className="exit" /></div>
     </div>
-    
   </div>
 </template>
 
 <script>
+import { reactive, ref, onMounted } from "@vue/composition-api";
 export default {
-  
-}
+  name: "header",
+  setup(props,{ root }) {
+   const userinfo = root.$store.state.userInfo
+  //  console.log(username);
+   return {
+     userinfo
+   }
+   
+  }
+};
 </script>
 
 <style lang="scss" scoped>
@@ -25,9 +64,9 @@ export default {
   position: fixed;
   top:0;
   right: 0;
-  left:$navMenu;
+  left:0;
   height: 75px;
-  background-color: #fff;
+  background-color:#fff;
   // 阴影框
   // -webkit-box-shadow: 0 3px 16px 0 rgba(0,0,0,.1);
   box-shadow: 0 3px 16px 0 rgba(0,0,0,.1);
@@ -37,8 +76,9 @@ export default {
 .header-icon{
   padding: 0 32px;
   svg {
-    margin-bottom: -8px;
-    font-size: 25px;
+    margin-bottom: -12px;
+    margin-left: 20px;
+    font-size: 40px;
     fill: currentColor;
     color: rgb(8, 8, 8);
     cursor: pointer;
@@ -51,6 +91,22 @@ export default {
   // 兄弟节点的下一节点,user-info的下一兄弟节点是header-icon
   + .header-icon{
     padding: 0 28px;
+  }
+}
+.header-mid {
+  padding: 0 32px;
+  font-size: 18px;
+  cursor: pointer;
+  svg {
+    margin-bottom: -10px;
+    margin-left: 20px;
+    font-size: 30px;
+    fill: currentColor;
+    color: rgb(8, 8, 8);
+  }
+  .mid-wrap{
+    // margin: 0 32px;
+    padding: 0 32px;
   }
 }
 </style>

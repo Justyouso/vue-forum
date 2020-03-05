@@ -19,7 +19,7 @@ export default {
 #main-wrap {
   height: 100vh;
   position: fixed;
-  left: $navMenu;
+  left: 0;
   top: 75px;
   right: 0;
   bottom: 0;

@@ -23,26 +23,26 @@ const routes = [
     component: () => import("../views/Login/index.vue")
   },
    // 控制台
-   {
-    path: "/console",
-    name: "Console",
-    meta: {
-      name: '控制台',
-      icon: 'console'
-    },
-    component: Layout,
-    // 在父component中（Layout/index）会展示children中的第一个
-    children: [
-      {
-        path: "/index",
-        name: "Index",
-        meta: {
-          name: '首页'
-        },
-        component: () => import("../views/Console/index.vue")
-      }
-    ]
-  },
+  //  {
+  //   path: "/index",
+  //   name: "Index",
+  //   meta: {
+  //     name: '控制台',
+  //     icon: 'index'
+  //   },
+  //   component: Layout,
+  //   // 在父component中（Layout/index）会展示children中的第一个
+  //   children: [
+  //     {
+  //       path: "/",
+  //       name: "Index",
+  //       meta: {
+  //         name: '首页'
+  //       },
+  //       component: () => import("../views/Console/index.vue")
+  //     }
+  //   ]
+  // },
   // 信息管理
   {
     path: "/info",
@@ -77,20 +77,48 @@ const routes = [
     path: "/user",
     name: "User",
     meta: {
-      name: '用户管理',
+      name: '用户',
       icon: 'user'
     },
     component: Layout,
     // 在父component中（Layout/index）会展示children中的第一个
     children: [
       {
-        path: "/userIndex",
-        name: "UserIndex",
+        path: "/userAttention",
+        name: "UserAttention",
         meta: {
-          name: '用户列表'
+          name: '用户关注'
         },
-        component: () => import("../views/User/index.vue")
+        component: () => import("../views/User/attention.vue")
       }
+    ]
+  },
+  // 文章
+  {
+    path: "/article",
+    name: "Articles",
+    meta: {
+      name: '文章'
+    },
+    component: Layout,
+    // 在父component中（Layout/index）会展示children中的第一个
+    children: [
+      {
+        path: "/articleFound",
+        name: "ArticleFound",
+        meta: {
+          name: '文章发现'
+        },
+        component: () => import("../views/Articles/found.vue")
+      },
+      {
+        path: "/articleNew",
+        name: "ArticleNew",
+        meta: {
+          name: '最新文章'
+        },
+        component: () => import("../views/Articles/new.vue")
+      },
     ]
   }
 ];

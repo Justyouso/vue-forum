@@ -25,7 +25,7 @@
           <!-- 子级菜单 -->
           <el-menu-item v-for="subitem in item.children" :key="subitem.id" :index="subitem.path">{{subitem.meta.name}}</el-menu-item>
         </el-submenu>
-       </template>
+      </template>
     </el-menu>
     
   </div> 
@@ -40,6 +40,7 @@ export default {
     const isCollapse = ref(false);
     // 获取所有路由
     const routers = reactive(root.$router.options.routes);
+    console.log(routers)
     /** 定义方法 */
     const handleOpen = (key, keyPath) => {
       
@@ -74,7 +75,7 @@ export default {
 @import "../../../styles/config.scss";
 #nav-wrap {
   position: fixed;
-  top: 0;
+  top: 75px;
   left: 0;
   width: $navMenu;
   height: 100vh;

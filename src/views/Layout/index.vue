@@ -1,20 +1,20 @@
 <template>
   <div id="layout">
     <LayoutHeader />
-    <LayoutNav />
+    <!-- <LayoutNav /> -->
     <LayoutMain />
   </div>
 </template>
 
 <script>
 import LayoutHeader from './Components/Header'
-import LayoutNav from './Components/Nav'
+// import LayoutNav from './Components/Nav'
 import LayoutMain from './Components/Main'
 
 export default {
   name: 'layout',
-  components: {LayoutHeader,LayoutNav,LayoutMain},
-  setup(){
+  components: {LayoutHeader,LayoutMain},
+  setup(props){
 
   }
 }
