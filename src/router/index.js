@@ -22,60 +22,11 @@ const routes = [
     },
     component: () => import("../views/Login/index.vue")
   },
-   // 控制台
-  //  {
-  //   path: "/index",
-  //   name: "Index",
-  //   meta: {
-  //     name: '控制台',
-  //     icon: 'index'
-  //   },
-  //   component: Layout,
-  //   // 在父component中（Layout/index）会展示children中的第一个
-  //   children: [
-  //     {
-  //       path: "/",
-  //       name: "Index",
-  //       meta: {
-  //         name: '首页'
-  //       },
-  //       component: () => import("../views/Console/index.vue")
-  //     }
-  //   ]
-  // },
-  // 信息管理
-  {
-    path: "/info",
-    name: "Info",
-    meta: {
-      name: '信息管理',
-      icon: 'info'
-    },
-    component: Layout,
-    // 在父component中（Layout/index）会展示children中的第一个
-    children: [
-      {
-        path: "/infoIndex",
-        name: "InfoIndex",
-        meta: {
-          name: '信息列表'
-        },
-        component: () => import("../views/Info/index.vue")
-      },
-      {
-        path: "/infoCategory",
-        name: "InfoCategory",
-        meta: {
-          name: '信息分类'
-        },
-        component: () => import("../views/Info/category.vue")
-      }
-    ]
-  },
   // 用户管理
   {
     path: "/user",
     name: "User",
+    hidden:false,
     meta: {
       name: '用户',
       icon: 'user'
@@ -84,41 +35,67 @@ const routes = [
     // 在父component中（Layout/index）会展示children中的第一个
     children: [
       {
-        path: "/userAttention",
-        name: "UserAttention",
+        path: "/userIndex",
+        name: "UserIndex",
         meta: {
-          name: '用户关注'
+          name: '我的主页'
         },
-        component: () => import("../views/User/attention.vue")
+        component: () => import("../views/User/index.vue")
+      },
+      {
+        path: "/userSetting",
+        name: "UserSetting",
+        meta: {
+          name: '设置'
+        },
+        component: () => import("../views/User/setting.vue")
+      },
+      {
+        path: "/userWriting",
+        name: "UserWriting",
+        meta: {
+          name: '写文章'
+        },
+        component: () => import("../views/User/writing.vue")
       }
+
     ]
   },
-  // 文章
+  // 首页
   {
-    path: "/article",
-    name: "Articles",
+    path: "/index",
+    name: "Index",
+    hidden:true,
     meta: {
-      name: '文章'
+      name: '首页'
     },
     component: Layout,
     // 在父component中（Layout/index）会展示children中的第一个
     children: [
       {
-        path: "/articleFound",
-        name: "ArticleFound",
+        path: "/indexFound",
+        name: "indexFound",
         meta: {
           name: '文章发现'
         },
-        component: () => import("../views/Articles/found.vue")
+        component: () => import("../views/Index/found.vue")
       },
       {
-        path: "/articleNew",
-        name: "ArticleNew",
+        path: "/indexNew",
+        name: "IndexNew",
         meta: {
           name: '最新文章'
         },
-        component: () => import("../views/Articles/new.vue")
+        component: () => import("../views/Index/new.vue")
       },
+      {
+        path: "/indexAttention",
+        name: "IndexAttention",
+        meta: {
+          name: '关注'
+        },
+        component: () => import("../views/Index/attention.vue")
+      }
     ]
   }
 ];

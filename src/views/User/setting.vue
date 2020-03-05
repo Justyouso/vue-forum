@@ -1,13 +1,13 @@
 <template>
   <div>
-      我的主页
+      设置
   </div>
 
 </template>
 
 <script>
 export default {
-  name: "userIndex"
+  name: "userSetting"
 }
 </script>
 

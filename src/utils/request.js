@@ -17,8 +17,8 @@ const service = axios.create({
 service.interceptors.request.use(function (config) {
   // 在发送请求之前做些什么
   // 添加token
-  const userinfo = root.$store.state.userInfo
-  config.headers["token"] = userinfo.token
+  // const userinfo = root.$store.state.userInfo
+  // config.headers["token"] = userinfo.token
   return config;
 }, function (error) {
   // 对请求错误做些什么

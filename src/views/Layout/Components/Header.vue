@@ -2,20 +2,20 @@
   <div id="header-wrap">
     <div class="pull-left">
       <div class="pull-left header-icon">
-        <router-link  class="mid-wrap pull-left" to="/articleNew">
+        <router-link  class="mid-wrap pull-left" to="/indexNew">
           <svg-icon iconClass="logo" className="logo" />
         </router-link>
         
       </div>
       <div class="header-mid pull-right">
         <!-- <div class="mid-wrap pull-left"> -->
-          <router-link  class="mid-wrap pull-left" to="/articleFound">
+          <router-link  class="mid-wrap pull-left" to="/indexFound">
           <svg-icon iconClass="find" className="find" />
           发现
           </router-link>
         <!-- </div> -->
         <div class="mid-wrap pull-left">
-          <router-link  class="mid-wrap pull-left" to="/userAttention">
+          <router-link  class="mid-wrap pull-left" to="/indexAttention">
           <svg-icon iconClass="attention" className="attention" />关注
           </router-link>
             
@@ -35,7 +35,21 @@
           ></el-select>
         </template>
       </div> -->
-      <div class="user-info pull-left">{{userinfo.role}}</div>
+      <div class="user-info pull-left">
+        <template v-for="(item,index) in routers">
+          <el-dropdown @command="handleCommand"  v-if="!item.hidden" :key="item.id" :index="index + ''">
+            <span class="el-dropdown-link">
+              王超<i class="el-icon-arrow-down el-icon--right"></i>
+            </span>
+           
+            <el-dropdown-menu slot="dropdown" >
+              <el-dropdown-item  :command="subitem.name" v-for="subitem in item.children" :key="subitem.id">
+                {{subitem.meta.name}}
+              </el-dropdown-item>
+            </el-dropdown-menu>
+          </el-dropdown>
+        </template>
+      </div>
       <div class="header-icon pull-left">
         <svg-icon iconClass="exit" className="exit" />
       </div>
@@ -46,12 +60,27 @@
 <script>
 import { reactive, ref, onMounted } from "@vue/composition-api";
 export default {
-  name: "header",
+  name: "Header",
   setup(props,{ root }) {
-   const userinfo = root.$store.state.userInfo
+    const userinfo = root.$store.state.userInfo
+
+   // 获取所有路由
+    const routers = reactive(root.$router.options.routes);
+  
   //  console.log(username);
+  /**
+   * 函数
+   */
+    // 跳转页面
+    const handleCommand = (command) =>{
+        root.$router.push({
+          name: command
+        })
+      }
    return {
-     userinfo
+    userinfo,
+    routers,
+    handleCommand
    }
    
   }

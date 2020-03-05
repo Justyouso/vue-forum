@@ -1,6 +1,6 @@
 <template>
   <div>
-      我的主页
+      写作
   </div>
 
 </template>
