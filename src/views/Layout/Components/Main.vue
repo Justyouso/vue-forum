@@ -17,7 +17,8 @@ export default {
 <style lang="scss" scoped>
 @import "../../../styles/config.scss";
 #main-wrap {
-  height: 100vh;
+  overflow: scroll;
+  // height: 100vh;
   position: fixed;
   left: 0;
   top: 75px;

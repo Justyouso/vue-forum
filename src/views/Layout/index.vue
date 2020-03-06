@@ -22,6 +22,7 @@ export default {
 
 <style lang="scss" scoped>
 #layout {
-  
+    // overflow: scroll;
+    // height: 100vh;
 }
 </style>
