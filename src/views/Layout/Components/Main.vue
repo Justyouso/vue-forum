@@ -18,14 +18,17 @@ export default {
 @import "../../../styles/config.scss";
 #main-wrap {
   overflow: scroll;
+  overflow-x: hidden;
   // height: 100vh;
   position: fixed;
   left: 0;
   top: 75px;
   right: 0;
   bottom: 0;
-  border: 30px solid #f7f7f7;
+  border: 5px solid #f7f7f7;
   border-bottom: 0;
+  border-left: 0;
+  border-right: 0;
   -webkit-box-sizing: border;
 }
 .main-content{
