@@ -35,13 +35,12 @@
           ></el-select>
         </template>
       </div> -->
-      <div class="user-info pull-left">
+      <div v-if="userinfo.role" class="user-info pull-left">
         <template v-for="(item,index) in routers">
           <el-dropdown @command="handleCommand"  v-if="!item.hidden" :key="item.id" :index="index + ''">
             <span class="el-dropdown-link">
-              王超<i class="el-icon-arrow-down el-icon--right"></i>
+              {{userinfo.role}}<i class="el-icon-arrow-down el-icon--right"></i>
             </span>
-           
             <el-dropdown-menu slot="dropdown" >
               <el-dropdown-item  :command="subitem.name" v-for="subitem in item.children" :key="subitem.id">
                 {{subitem.meta.name}}
@@ -49,6 +48,14 @@
             </el-dropdown-menu>
           </el-dropdown>
         </template>
+      </div>
+      <div v-else class="user-info pull-left">
+         <router-link  class="" to="/indexFound">
+            <el-button type="text">登陆</el-button>
+        </router-link>
+        <router-link  class="" to="/indexFound">
+            <el-button type="danger" round>注册</el-button>
+        </router-link>
       </div>
       <div class="header-icon pull-left">
         <svg-icon iconClass="exit" className="exit" />
@@ -66,8 +73,8 @@ export default {
 
    // 获取所有路由
     const routers = reactive(root.$router.options.routes);
-  
-  //  console.log(username);
+
+    console.log(userinfo.role);
   /**
    * 函数
    */
@@ -77,10 +84,20 @@ export default {
           name: command
         })
       }
+    // const username = computed(()=>{
+    //   if (!userinfo.username){
+    //     return true
+    //   }else{
+    //     return false
+    //   }
+    // }
+      
+    // )
    return {
     userinfo,
     routers,
-    handleCommand
+    handleCommand,
+    // username
    }
    
   }

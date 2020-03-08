@@ -301,7 +301,7 @@ export default {
         clearCountDown()
         // 跳转到最新文章
         root.$router.push({
-          name: "ArticleNew"
+          name: "Index"
         })
       }).catch(error =>{
         console.log(error)
