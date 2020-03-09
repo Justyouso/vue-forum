@@ -1,4 +1,7 @@
 const path = require('path');
+function resolve(dir) {
+  return path.join(__dirname, '.', dir);
+}
 module.exports = {
   // 基本路径
   publicPath: process.env.NODE_ENV === 'production' ? '' : '/',
@@ -9,15 +12,37 @@ module.exports = {
   /** vue3.0内置了webpack所有东西，
    * webpack配置,see https://github.com/vuejs/vue-cli/blob/dev/docs/webpack.md
    **/
-  chainWebpack: (config) => {
-    const svgRule = config.module.rule("svg");     
-    svgRule.uses.clear();     
-    svgRule
-    .use("svg-sprite-loader")
-    .loader("svg-sprite-loader")
-    .options({ 
-      symbolId: "icon-[name]",
-      include: ["./src/icons"] 
+  // chainWebpack: (config) => {
+  //   config.module
+  //   .rule('svg')
+  //   .exclude.add(resolve('src/icons'))
+  //   .end();
+
+  //   const svgRule = config.module.rule("svg");     
+  //   svgRule.uses.clear();     
+  //   svgRule
+  //   .use("svg-sprite-loader")
+  //   .loader("svg-sprite-loader")
+  //   .options({ 
+  //     symbolId: "icon-[name]",
+  //     include: ["./src/icons"] 
+  //   });
+  // },
+  chainWebpack: config => {
+    config.module
+    .rule('svg')
+    .exclude.add(resolve('src/icons'))
+    .end();
+
+    config.module
+    .rule('icons')
+    .test(/\.svg$/)
+    .include.add(resolve('src/icons'))
+    .end()
+    .use('svg-sprite-loader')
+    .loader('svg-sprite-loader')
+    .options({
+      symbolId: 'icon-[name]'
     });
   },
   configureWebpack: (config) => {
@@ -83,4 +108,8 @@ module.exports = {
    * 第三方插件配置
    */
   pluginOptions: {}
+  // plugins: [
+  //   ...
+  //     { src: '@/plugins/vue-mavon-editor', srr: false }
+  //   ],
 }

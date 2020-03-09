@@ -35,11 +35,11 @@
           ></el-select>
         </template>
       </div> -->
-      <div v-if="userinfo.role" class="user-info pull-left">
+      <div v-if="userinfo.username" class="user-info pull-left">
         <template v-for="(item,index) in routers">
           <el-dropdown @command="handleCommand"  v-if="!item.hidden" :key="item.id" :index="index + ''">
             <span class="el-dropdown-link">
-              {{userinfo.role}}<i class="el-icon-arrow-down el-icon--right"></i>
+              {{userinfo.username}}<i class="el-icon-arrow-down el-icon--right"></i>
             </span>
             <el-dropdown-menu slot="dropdown" >
               <el-dropdown-item  :command="subitem.name" v-for="subitem in item.children" :key="subitem.id">
