@@ -7,7 +7,7 @@ Vue.use(VueRouter);
 const routes = [
   {
     path: "/",
-    redirect: "login",
+    redirect: "indexNew",
     hidden:true,
     meta: {
       name: '主页'
@@ -95,6 +95,27 @@ const routes = [
           name: '关注'
         },
         component: () => import("../views/Index/attention.vue")
+      }
+    ]
+  },
+  // 文章
+  {
+    path: "/article",
+    name: "Article",
+    hidden:true,
+    meta: {
+      name: '文章'
+    },
+    component: Layout,
+    // 在父component中（Layout/index）会展示children中的第一个
+    children: [
+      {
+        path: "/article/detail/:articleId",
+        name: "文章详情",
+        meta: {
+          name: '文章详情'
+        },
+        component: () => import("../views/Article/detail.vue")
       }
     ]
   }

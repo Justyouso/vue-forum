@@ -293,6 +293,7 @@ export default {
         console.log(data);
         
         root.$store.commit('SET_USERINFO',data)
+        root.$store.commit('SET_ISLIVE',true)
         // root.$message({
         //   message:data.message,
         //   type:"success"
@@ -301,7 +302,7 @@ export default {
         clearCountDown()
         // 跳转到最新文章
         root.$router.push({
-          name: "Index"
+          name: "IndexNew"
         })
       }).catch(error =>{
         console.log(error)

@@ -8,13 +8,11 @@
 </template>
 
 <script>
-import {mavonEditor} from "mavon-editor";
-import "mavon-editor/dist/css/index.css";
 import { articleCreate } from '@/api/article'
 
 export default {
   name: "userWriting",
-  components: {mavonEditor},
+  // components: {mavonEditor},
     data(){
       return {
         doc: '',
@@ -34,9 +32,11 @@ export default {
             author_id:this.uid
           }
           articleCreate(requestData).then(response =>{
-              let data = response.data.data
-              console.log(data);
-              
+              let data = response.data
+              this.$message({
+                message:data.message,
+                type:"success"
+              })
             }).catch(error =>{
               console.log(error)
           })

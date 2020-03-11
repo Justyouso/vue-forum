@@ -6,6 +6,7 @@ Vue.use(Vuex);
 export default new Vuex.Store({
   state: {
     userInfo:{},
+    isLive: false,
     isCollapse: false,
     count:10
   },
@@ -19,6 +20,9 @@ export default new Vuex.Store({
     },
     SET_USERINFO(state,value){
       state.userInfo = value
+    },
+    SET_ISLIVE(state,value){
+      state.isLive = value
     },
   },
   actions: {},
