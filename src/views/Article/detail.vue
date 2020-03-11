@@ -11,7 +11,7 @@
         :type="follow ? '':'danger'"
         round
         @click="followed(follow)"
-      >{{follow ? '已关注':'关注'}}</el-button>
+      >{{follow ? '取消关注':'关注'}}</el-button>
       <div class="article-info">字数{{article.body_num}} 阅读 {{article.read}}</div>
     </div>
     <!-- 文章展示 -->
