@@ -32,12 +32,35 @@
     </div>
     <!-- 作者列表 -->
     <div class="author-list">
+      <!-- 推荐作者 -->
       <template>
-        <el-table :data="authorData" style="width: 100%">
-          <div>
-            <el-table-column label="推荐作者">
+        <el-table :data="authorLabel" style="width: 100%" :show-header="false">
+          <div class="author-label">
+            <el-table-column>
               <template slot-scope="scope">
+                {{scope.row.label}}
+                <el-button class="pull-right icon-like" type="text" @click="changeAuthor()">
+                  <div
+                    :class="[rotate? 'el-icon-refresh rotate-start': 'el-icon-refresh rotate-end']"
+                  ></div>
+                  <div class="pull-right">{{scope.row.operation}}</div>
+                </el-button>
                 <el-button class="author-wrap" type="text">{{scope.row.username}}</el-button>
+              </template>
+            </el-table-column>
+          </div>
+        </el-table>
+      </template>
+      <!-- 作者列表 -->
+      <template>
+        <el-table :data="authorData" style="width: 100%" :show-header="false">
+          <div>
+            <el-table-column>
+              <template slot-scope="scope">
+                <!-- 作者名称 -->
+                <el-button class="author-wrap" type="text">{{scope.row.username}}</el-button>
+
+                <!-- 关注 -->
                 <el-button
                   v-if="scope.row.follow"
                   class="pull-right icon-like el-icon-close"
@@ -50,6 +73,8 @@
                   type="text"
                   @click="followed(scope.$index,scope.row)"
                 >关注</el-button>
+
+                <!-- 文章量 -->
                 <p>写了{{scope.row.article}}篇文章 • {{scope.row.followed}}关注</p>
               </template>
             </el-table-column>
@@ -68,18 +93,19 @@ export default {
   name: "New",
   data() {
     return {
-      articleData: [],
-      authorData: [],
-      follow: true
+      articleData: [], // 文章列表
+      authorData: [], // 作者列表
+      follow: true, // 关注与否
+      authorLabel: [{ label: "推荐作者", operation: "换一批" }], // 作者列表头
+      rotate: false, // 刷新图标
+      pageInfo: {} // 作者列表翻页信息
     };
   },
   methods: {
-    t() {
-      this.follow = false;
-    },
     // 初始化数据
     initData() {
-      this.getArticles(), this.getAuthors(), this.getUserInfo();
+      this.getArticles(), this.getUserInfo();
+      this.getAuthors(1, 5);
     },
     // 获取文章文章列表
     getArticles() {
@@ -93,12 +119,17 @@ export default {
           console.log(error);
         });
     },
-    getAuthors() {
+    getAuthors(page, per_page) {
       // 初始化作者列表
-      let requestData = { page: 1, pre_page: 5 };
+      let requestData = {
+        page: page,
+        per_page: per_page,
+        user: this.userinfo.uid
+      };
       userNewList(requestData)
         .then(response => {
           this.authorData = response.data.data;
+          this.pageInfo = response.data.pageInfo;
         })
         .catch(error => {
           console.log(error);
@@ -140,6 +171,21 @@ export default {
     getUserInfo() {
       (this.userinfo = this.$store.state.userInfo),
         (this.islive = this.$store.state.isLive);
+    },
+    // 作者列表换批次
+    changeAuthor() {
+      // 更新标签旋转
+      this.rotate = !this.rotate;
+      // 判断是否有下一页
+      if (this.pageInfo.has_next) {
+        // 查询新的author
+        this.getAuthors(this.pageInfo.page + 1, this.pageInfo.per_page);
+      } else {
+        this.$message({
+          message: "无更多数据",
+          type: "warning"
+        });
+      }
     }
   },
   created() {
@@ -203,6 +249,18 @@ svg {
   }
   p {
     font-size: 12px;
+  }
+  .author-label {
+    font-size: 14px;
+  }
+  .rotate-end {
+    // transform: rotate(-360deg);
+    transition: all 0.5s;
+  }
+
+  .rotate-start {
+    transform: rotate(7920deg);
+    transition: all 0.5s;
   }
 }
 </style>
