@@ -10,7 +10,7 @@
                 <router-link
                   tag="a"
                   class="title"
-                  :to="`/article/detail/${scope.row.id}`"
+                  :to="`/article/detail/${scope.row.id}`" target="_blank"
                 >{{scope.row.title}}</router-link>
                 <p>{{scope.row.summary}}</p>
                 <div class="article-table-bottom">
@@ -19,9 +19,9 @@
                     class="author-box"
                     :to="`/infoCenter/detail/${scope.row.author_id}`"
                   >{{scope.row.author}}</router-link>
-                  <svg-icon iconClass="read" class="read" />
+                  <svg-icon iconClass="read" className="read" />
                   <span class="author-box">{{scope.row.read}}</span>
-                  <svg-icon iconClass="like" class="like" />
+                  <svg-icon iconClass="like" className="like" />
                   <span class="author-box">{{scope.row.comments}}</span>
                 </div>
               </template>

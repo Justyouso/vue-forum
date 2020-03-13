@@ -1,28 +1,54 @@
 <template>
-  <div class="article-detail">
-    <div class="markdown-body author-detail">
-      <!-- 作者 -->
-      <div class="author">{{article.author}}</div>
-      <!-- 关注 -->
-      <el-button
-        native-type="button"
-        class="like"
-        size="mini"
-        :type="follow ? '':'danger'"
-        round
-        @click="followed(follow)"
-      >{{follow ? '取消关注':'关注'}}</el-button>
-      <div class="article-info">字数{{article.body_num}} 阅读 {{article.read}}</div>
+  <div class="content-detail">
+    <div class="article-detail">
+      <!-- 作者展示 -->
+      <div class="markdown-body author-detail">
+        <!-- 作者 -->
+        <div class="author">{{article.author}}</div>
+        <!-- 关注 -->
+        <el-button
+          native-type="button"
+          class="like"
+          size="mini"
+          :type="follow ? '':'danger'"
+          round
+          @click="followed(follow)"
+        >{{follow ? '取消关注':'关注'}}</el-button>
+        <div class="article-info">字数{{article.body_num}} 阅读 {{article.read}}</div>
+      </div>
+      <!-- 文章展示 -->
+      <div class="editor">
+        <mavon-editor :boxShadow="false" v-html="article.body_html"></mavon-editor>
+      </div>
+
+      <div class='markdown-body'>
+        评论:
+      </div>
     </div>
-    <!-- 文章展示 -->
-    <div class="editor">
-      <mavon-editor :boxShadow="false" v-html="article.body_html"></mavon-editor>
+    <div class="relation_list">
+      <template>
+        <el-table :data="articles" style="width: 100%">
+          <div>
+            <el-table-column label="相关文章">
+              <template slot-scope="scope">
+                <!-- 文章标题 -->
+                <router-link tag='a' class="login-register" :to="`/article/detail/${scope.row.id}`" target="_blank">
+                  {{scope.row.title}}
+                </router-link>
+                <!-- 阅读量-->
+                <p>阅读 {{scope.row.read}}</p>
+              </template>
+            </el-table-column>
+          </div>
+        </el-table>
+      </template>
+
     </div>
   </div>
 </template>
 
 <script>
-import { articleDetail } from "@/api/article";
+import { articleDetail,articleNewList } from "@/api/article";
 import { userFollow } from "@/api/user";
 
 export default {
@@ -30,24 +56,43 @@ export default {
   // components: {mavonEditor},
   data() {
     return {
-      article: {}, //文章
+      article: {}, //文章详情
       follow: false,// 是否被关注状态
       userinfo: {}, // 用户信息
-      islive: null // 用户是否存在
+      islive: null ,// 用户是否存在
+      articles:[] // 作者相关文章列表
     };
   },
   methods: {
     // 初始化数据
     initData() {
-      this.getArticle(), this.getUserInfo();
+      this.getArticleDetail(), this.getUserInfo();
     },
     // 获取文章详情
-    getArticle() {
+    getArticleDetail() {
       articleDetail(this.articleId)
         .then(response => {
           this.article = response.data.data;
           // 获取作者是否被用户关注，前置条件是需要文章数据和用户数据
-          this.getfollow();
+          this.getfollow(this.article.author_id);
+          // 获取作者相关文章列表
+          this.getArticles(this.article.author_id);
+        })
+        .catch(error => {
+          console.log(error);
+        });
+      
+    },
+     // 获取作者相关最新文章列表
+    getArticles(author_id){
+      let requestData = {
+        page:1,
+        per_page:5,
+        author:author_id
+      }
+      articleNewList(requestData)
+        .then(response => {
+          this.articles = response.data.data;
         })
         .catch(error => {
           console.log(error);
@@ -59,12 +104,12 @@ export default {
       this.islive = this.$store.state.isLive;
     },
     // 获取作者是否被关注
-    getfollow() {
+    getfollow(author_id) {
       // 判断用户是否存在
       if (this.islive) {
         let requestData = {
           user: this.userinfo.uid,
-          author: this.article.author_id,
+          author: author_id,
           type: 2
         };
         userFollow(requestData)
@@ -123,10 +168,18 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import "@/styles/main.scss";
+@import "@/styles/config.scss";
+.content-detail{
+  width: 1000px;
+  height: 100%;
+  margin: auto;
+}
 .article-detail {
   height: 100%;
-  width: 920px;
-  margin: auto;
+  width: 730px;
+  display: inline-block;
+  float: left;
   border: green;
 }
 .markdown-body {
@@ -149,6 +202,17 @@ export default {
   }
   .article-info {
     font-size: 13px;
+  }
+}
+.relation_list{
+  width: 240px;
+  padding: 0 0 0 30px;
+  float: left;
+  a{
+    font-size: $medFont;
+  }
+  p{
+    font-size: $minFont;
   }
 }
 </style>
