@@ -40,7 +40,17 @@ const routes = [
         meta: {
           name: '我的主页'
         },
-        component: () => import("../views/User/index.vue")
+        component: () => import("../views/User/index.vue"),
+        children:[
+          {
+            path: "/userIndexFollow",
+            name: "UserIndexFollow",
+            meta: {
+              name: '关注'
+            },
+            component: () => import("../views/User/Index/follow.vue")
+          },
+        ]
       },
       {
         path: "/userSetting",
