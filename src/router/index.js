@@ -35,7 +35,7 @@ const routes = [
     // 在父component中（Layout/index）会展示children中的第一个
     children: [
       {
-        path: "/userIndex",
+        path: "/userIndex/:userId",
         name: "UserIndex",
         meta: {
           name: '我的主页'
@@ -43,7 +43,7 @@ const routes = [
         component: () => import("../views/User/index.vue"),
         children:[
           {
-            path: "/userIndexFollow",
+            path: "/userIndexFollow/:userId",
             name: "UserIndexFollow",
             meta: {
               name: '关注'
@@ -53,7 +53,7 @@ const routes = [
         ]
       },
       {
-        path: "/userSetting",
+        path: "/userSetting/:userId",
         name: "UserSetting",
         meta: {
           name: '设置'
@@ -61,7 +61,7 @@ const routes = [
         component: () => import("../views/User/setting.vue")
       },
       {
-        path: "/userWriting",
+        path: "/userWriting/:userId",
         name: "UserWriting",
         meta: {
           name: '写文章'

@@ -93,7 +93,13 @@ export default {
     // 跳转页面
     handleCommand(command) {
       this.$router.push({
-        name: command
+        name: command,
+        params:{
+          userId:this.userinfo.uid
+        },
+        query:{
+          type:2
+        }
       });
     }
   },
