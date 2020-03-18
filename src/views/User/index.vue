@@ -7,19 +7,19 @@
           <div class="name">{{authorData.name}}</div>
           <div class="icon-list">
             <div class="meta-bolck pull-left">
-              <el-button type="text" @click="handleFollow('followed')">
+              <el-button type="text" @click="handleChild('followed')">
                 <p>{{authorData.followed}}</p>关注
                 <i class="el-icon-arrow-right"></i>
               </el-button>
             </div>
             <div class="meta-bolck pull-left">
-              <el-button type="text" @click="handleFollow('fans')">
+              <el-button type="text" @click="handleChild('fans')">
                 <p>{{authorData.fans}}</p>粉丝
                 <i class="el-icon-arrow-right"></i>
               </el-button>
             </div>
             <div class="meta-bolck pull-left">
-              <el-button type="text" @click="handleFollow('fans')">
+              <el-button type="text" @click="handleChild('articles')">
                 <p>{{authorData.articles}}</p>文章
                 <i class="el-icon-arrow-right"></i>
               </el-button>
@@ -39,7 +39,10 @@
       </div>
       <!-- 展现主体 -->
       <div class="home-content home-head">
-        <div v-if="childFlag=='followed'">
+        <div v-if="childFlag == 'articles'">
+          <Articles />
+        </div>
+        <div v-else-if="childFlag=='followed'">
           <Follow active="first" />
         </div>
         <div v-else>
@@ -62,12 +65,13 @@
 import { articleDetail, articleNewList } from "@/api/article";
 import { userFollow, userIndex } from "@/api/user";
 import Follow from "./Index/follow";
+import Articles from './Index/articles'
 export default {
   name: "userIndex",
-  components: { Follow },
+  components: { Follow,Articles },
   data() {
     return {
-      childFlag: "followed",
+      childFlag: "articles",
       authorInfo: {
         id: this.$route.params.userId,
         type: this.$route.query.type
@@ -158,7 +162,7 @@ export default {
         });
       }
     },
-    handleFollow(flag) {
+    handleChild(flag) {
       this.childFlag = flag;
       console.log(this.childFlag);
     }

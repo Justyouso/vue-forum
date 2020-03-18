@@ -121,7 +121,7 @@ const routes = [
     children: [
       {
         path: "/article/detail/:articleId",
-        name: "文章详情",
+        name: "ArticleDetail",
         meta: {
           name: '文章详情'
         },
