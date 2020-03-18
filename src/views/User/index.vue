@@ -7,64 +7,73 @@
           <div class="name">{{authorData.name}}</div>
           <div class="icon-list">
             <div class="meta-bolck pull-left">
-              <router-link tag="a" :to="`/userIndexFollow/${authorInfo.id}`">
+              <el-button type="text" @click="handleFollow('followed')">
                 <p>{{authorData.followed}}</p>关注
                 <i class="el-icon-arrow-right"></i>
-              </router-link>
+              </el-button>
             </div>
             <div class="meta-bolck pull-left">
-              <router-link tag="a" :to="`/userIndexFollow/${authorInfo.id}`">
+              <el-button type="text" @click="handleFollow('fans')">
                 <p>{{authorData.fans}}</p>粉丝
                 <i class="el-icon-arrow-right"></i>
-              </router-link>
+              </el-button>
             </div>
             <div class="meta-bolck pull-left">
-              <router-link tag="a" :to="`/userIndexFollow/${authorInfo.id}`">
+              <el-button type="text" @click="handleFollow('fans')">
                 <p>{{authorData.articles}}</p>文章
                 <i class="el-icon-arrow-right"></i>
-              </router-link>
+              </el-button>
             </div>
           </div>
         </div>
         <div class="btn pull-left" v-if="authorInfo.type==1">
           <el-button
-          native-type="button"
-          :class="follow?'el-icon-close':'el-icon-plus'"
-          size="medium"
-          :type="follow ? '':'success'"
-          round
-          @click="followed(follow)"
-        >{{follow ? '取消关注':'关注'}}</el-button>
+            native-type="button"
+            :class="follow?'el-icon-close':'el-icon-plus'"
+            size="medium"
+            :type="follow ? '':'success'"
+            round
+            @click="followed(follow)"
+          >{{follow ? '取消关注':'关注'}}</el-button>
         </div>
       </div>
       <!-- 展现主体 -->
       <div class="home-content home-head">
-        <router-view :key="$route.fullPath"/>
+        <div v-if="childFlag=='followed'">
+          <Follow active="first" />
+        </div>
+        <div v-else>
+          <Follow active="second" />
+        </div>
+        <!-- <Follow :active="childFlag=='followed'?'first':'second'"/> -->
       </div>
     </div>
     <!-- 右侧展示 -->
     <div class="user-nav pull-left">
-      <div class = "user-summary">
+      <div class="user-summary">
         <p>个人介绍</p>
-          {{authorData.about_me}}
+        {{authorData.about_me}}
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import { articleDetail,articleNewList } from "@/api/article";
-import { userFollow,userIndex } from "@/api/user";
+import { articleDetail, articleNewList } from "@/api/article";
+import { userFollow, userIndex } from "@/api/user";
+import Follow from "./Index/follow";
 export default {
   name: "userIndex",
+  components: { Follow },
   data() {
     return {
+      childFlag: "followed",
       authorInfo: {
         id: this.$route.params.userId,
         type: this.$route.query.type
       },
-      follow:false,
-      authorData:{},
+      follow: false,
+      authorData: {}
     };
   },
   methods: {
@@ -77,9 +86,8 @@ export default {
     getAuthorData(author_id) {
       userIndex(author_id)
         .then(response => {
-         this.authorData = response.data.data
-         console.log(this.authorData);
-         
+          this.authorData = response.data.data;
+          console.log(this.authorData);
         })
         .catch(error => {
           console.log(error);
@@ -109,8 +117,8 @@ export default {
       // 用户数据
       (this.userinfo = this.$store.state.userInfo),
         (this.islive = this.$store.state.isLive);
-        console.log(this.islive);
-        
+      // console.log(this.islive);
+
       // 作者信息
       this.authorInfo = {
         id: this.$route.params.userId,
@@ -141,7 +149,7 @@ export default {
     checkUser() {
       if (this.islive) {
         console.log(this.islive);
-        
+
         return true;
       } else {
         console.log(this.islive);
@@ -149,10 +157,13 @@ export default {
           name: "Login"
         });
       }
+    },
+    handleFollow(flag) {
+      this.childFlag = flag;
+      console.log(this.childFlag);
     }
-
   },
-  created(){
+  created() {
     this.initData();
   }
 };
@@ -198,6 +209,9 @@ export default {
         a {
           color: #969696;
         }
+        .el-button{
+          padding: 0;
+        }
       }
     }
   }
@@ -209,12 +223,12 @@ export default {
   width: 250px;
   padding-left: 30px;
   font-size: 14px;
-  
-  .user-summary{
+
+  .user-summary {
     border-bottom: 1px solid #ededed;
-    padding-bottom:10px;
+    padding-bottom: 10px;
   }
-  p{
+  p {
     padding: 10px 0 10px 0;
     color: #969696;
   }

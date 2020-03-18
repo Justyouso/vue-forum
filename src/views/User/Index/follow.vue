@@ -18,7 +18,10 @@
                           <!-- <router-link tag="a" :to="`/userIndex/${scope.row.id}+'?_='+(new Date).getTime()`">
                              {{scope.row.name}}
                           </router-link> -->
-                          <router-link tag="a" :to="`/userIndexFollow/${scope.row.id}`">
+                          <!-- <router-link tag="a" :to="`/userIndex/${scope.row.id}`">
+                             {{scope.row.name}}
+                          </router-link> -->
+                          <router-link tag="a" :to="{path:`/userIndex/${scope.row.id}`,query:{type:1}}" target="_blank">
                              {{scope.row.name}}
                           </router-link>
                         </div>
@@ -52,6 +55,56 @@
           </div>
         </el-tab-pane>
         <el-tab-pane label="粉丝" name="second">
+          <div class="author-list">
+            <!-- 作者列表 -->
+            <template>
+              <el-table :data="followData" style="width: 100%" :show-header="false">
+                <el-table-column>
+                  <template slot-scope="scope">
+                    <div class="follow">
+                      <div class="fol-left pull-left">
+                        <div class="title">
+                          <!-- <el-button type="text" @click="authorClick(scope.row.id)">
+                            {{scope.row.name}}
+                          </el-button> -->
+                          <!-- <router-link tag="a" :to="`/userIndex/${scope.row.id}+'?_='+(new Date).getTime()`">
+                             {{scope.row.name}}
+                          </router-link> -->
+                          <!-- <router-link tag="a" :to="`/userIndex/${scope.row.id}`">
+                             {{scope.row.name}}
+                          </router-link> -->
+                          <router-link tag="a" :to="{path:`/userIndex/${scope.row.id}`,query:{type:1}}" target="_blank">
+                             {{scope.row.name}}
+                          </router-link>
+                        </div>
+                        <div class="icon-list">
+                          <div class="first meta-bolck pull-left">
+                            关注 {{scope.row.followed}}
+                          </div>
+                          <div class="meta-bolck pull-left">
+                            粉丝 {{scope.row.fans}}
+                          </div>
+                          <div class="meta-bolck pull-left">
+                            <router-link tag="a" :to="`/userIndexFollow/`">文章 {{scope.row.articles}}</router-link>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="fol-right pull-right">
+                        <el-button
+                          native-type="button"
+                          :class="scope.row.is_followed?'el-icon-close':'el-icon-plus'"
+                          size="medium"
+                          :type="scope.row.is_followed ? '':'success'"
+                          round
+                          @click="followed(scope.$index,scope.row)"
+                        >{{scope.row.is_followed ? '取消关注':'关注'}}</el-button>
+                      </div>
+                    </div>
+                  </template>
+                </el-table-column>
+              </el-table>
+            </template>
+          </div>
         </el-tab-pane>
       </el-tabs>
     </template>
@@ -62,18 +115,25 @@
 import { userFollow, userIndexFollows } from "@/api/user";
 export default {
   name: "userFollow",
+  props:{
+    active:String,
+    default:'followed'
+  },
   data() {
     return {
       authorId: this.$route.params.userId,
+      activeName :this.active,
       followData: [
 
       ],
-      activeName: "first"
+      // activeName: "first"
     };
   },
   methods: {
     initData() {
       this.getUserInfo()
+      console.log(this.activeName);
+      
     },
     // 获取用户和作者基础
     getUserInfo() {
@@ -83,9 +143,16 @@ export default {
 
       // 作者ID
       this.authorId = this.$route.params.userId;
+      // this.activeName = this.$route.query.activeName
 
       // 获取作者关注或粉丝数据
-      this.getFollowData(this.authorId,"followed")
+      if (this.activeName == "first"){
+        this.getFollowData(this.authorId,"followed")
+      }else{
+         this.getFollowData(this.authorId,"fans")
+      }
+
+      
     },
     authorClick(author_id){
       this.$router.push({
@@ -98,7 +165,6 @@ export default {
       }
     });
     },
-
     handleClick(tab, event) {
       if (tab.label =="关注用户"){
         this.getFollowData(this.authorId,"followed")
@@ -161,11 +227,23 @@ export default {
   created(){
     this.initData()
   },
-  // watch: {
-  //   '$route' (to, from) {
-  //       this.$router.go(0);
-  //   }
-  // },
+  watch: {
+    // 监听从父组件中传来的值
+    active: {
+      // immediate: true, // 很重要！！！
+      handler (val) {
+        this.activeName = val
+        // 获取作者关注或粉丝数据
+        if (this.activeName == "first"){
+          this.getFollowData(this.authorId,"followed")
+        }else{
+          this.getFollowData(this.authorId,"fans")
+        }
+        
+        // console.log('action Value:', val, this.levelPersonal)
+      }
+    }
+  },
 };
 </script>
 
