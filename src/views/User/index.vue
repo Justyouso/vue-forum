@@ -84,7 +84,7 @@ export default {
     // 初始化数据
     initData() {
       this.getUserInfo(), this.getAuthorData(this.authorInfo.id);
-      // this.getfollow(this.authorInfo.id);
+      this.getfollow(this.authorInfo.id);
     },
     // 获取作者数据
     getAuthorData(author_id) {

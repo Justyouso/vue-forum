@@ -74,42 +74,18 @@ export default {
     return {
       authorId: this.$route.params.userId,
       activeName :"first",
-      articlesData: [
-        {
-            "id": "19",
-            "title": "代梦勤",
-            "summary": "代梦勤是猪儿虫",
-            "body_md": "# 代梦勤\n代梦勤是猪儿虫",
-            "body_html": "<h1><a id=\"_0\"></a>代梦勤</h1>\n<p>代梦勤是猪儿虫</p>\n",
-            "author_id": 8,
-            "author": "justyouso",
-            "read": 6,
-            "comments": 0,
-            "timestamp":"2019-03-03 12:22:23"
-        },
-        {
-            "id": "18",
-            "title": "测试",
-            "summary": "我是王超，我来自贵州",
-            "body_md": "# 测试\n**我是王超，我来自贵州**",
-            "body_html": "<h1><a id=\"_0\"></a>测试</h1>\n<p><strong>我是王超，我来自贵州</strong></p>",
-            "author_id": 8,
-            "author": "justyouso",
-            "read": 99,
-            "comments": 0,
-            "timestamp":"2019-03-03 12:22:23"
-        },
-      ],
+      articlesData: [],
     };
   },
   methods: {
     initData() {
-      this.getArticlesData("time")
+      this.getArticlesData("timestamp")
     },
     // 获取文章文章列表
     getArticlesData(sortFields) {
       let requestData = {
-        sort:sortFields
+        author:this.authorId,
+        order:sortFields
       };
     // 初始化文章列表
     articleNewList(requestData)
@@ -126,7 +102,7 @@ export default {
       if (tab.name=="second"){
         this.getArticlesData("read")
       }else{
-        this.getArticlesData("time")
+        this.getArticlesData("timestamp")
       }
       // this.getFollowData(this.author_id,"f")
       // console.log(tab.label, event);
