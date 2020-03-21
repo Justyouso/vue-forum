@@ -44,29 +44,49 @@
       </template>
 
     </div>
+    <div  v-if="wordCloudData.length>0" class="word_cloud">
+      <wordCloud :data="wordCloudData" :size-range="[10, 30]" />
+    </div>
   </div>
 </template>
 
 <script>
-import { articleDetail,articleNewList } from "@/api/article";
+import { articleDetail,articleNewList,articleWordCloud } from "@/api/article";
 import { userFollow } from "@/api/user";
+import wordCloud from "@/views/Article/wordCloud";
 
 export default {
   name: "articleDetail",
-  // components: {mavonEditor},
+  components: {wordCloud},
   data() {
     return {
       article: {}, //文章详情
       follow: false,// 是否被关注状态
       userinfo: {}, // 用户信息
       islive: null ,// 用户是否存在
-      articles:[] // 作者相关文章列表
+      articles:[], // 作者相关文章列表
+      wordCloudData:[]// 词云
     };
   },
   methods: {
     // 初始化数据
     initData() {
-      this.getArticleDetail(), this.getUserInfo();
+      this.getArticleDetail(), 
+      this.getWordCloud(),
+      this.getUserInfo();
+    },
+    // 获取词云
+    getWordCloud(){
+      let requestData = {
+        articles:this.articleId
+      };
+      articleWordCloud(requestData)
+        .then(response => {
+          this.wordCloudData = response.data.data;
+        })
+        .catch(error => {
+          console.log(error);
+        });
     },
     // 获取文章详情
     getArticleDetail() {
@@ -204,6 +224,7 @@ export default {
     font-size: 13px;
   }
 }
+
 .relation_list{
   width: 240px;
   padding: 0 0 0 30px;
@@ -214,5 +235,10 @@ export default {
   p{
     font-size: $minFont;
   }
+}
+.word_cloud{
+  width: 240px;
+  float: left;
+  padding: 10px 0 0 30px;
 }
 </style>

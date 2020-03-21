@@ -10,7 +10,8 @@
                 <router-link
                   tag="a"
                   class="title"
-                  :to="`/article/detail/${scope.row.id}`" target="_blank"
+                  :to="`/article/detail/${scope.row.id}`"
+                  target="_blank"
                 >{{scope.row.title}}</router-link>
                 <p>{{scope.row.summary}}</p>
                 <div class="article-table-bottom">
@@ -82,15 +83,20 @@
         </el-table>
       </template>
     </div>
+    <div v-if="wordCloudData.length" class="word-cloud">
+      <wordCloud :data="wordCloudData" :size-range="[10, 30]" />
+    </div>
   </div>
 </template>
 
 <script>
+import wordCloud from "../Article/wordCloud";
 import { reactive, ref, onMounted, computed } from "@vue/composition-api";
-import { articleNewList } from "@/api/article";
+import { articleNewList,articleWordCloud } from "@/api/article";
 import { userNewList, userFollow } from "@/api/user";
 export default {
   name: "New",
+  components: { wordCloud },
   data() {
     return {
       articleData: [], // 文章列表
@@ -98,14 +104,28 @@ export default {
       follow: true, // 关注与否
       authorLabel: [{ label: "推荐作者", operation: "换一批" }], // 作者列表头
       rotate: false, // 刷新图标
-      pageInfo: {} // 作者列表翻页信息
+      pageInfo: {}, // 作者列表翻页信息
+      wordCloudData:[]// 词云
     };
   },
   methods: {
     // 初始化数据
     initData() {
-      this.getArticles(), this.getUserInfo();
+      this.getArticles(),
+      this.getWordCloud(),
+      this.getUserInfo();
       this.getAuthors(1, 5);
+    },
+    // 获取词云
+    getWordCloud(){
+      let requestData = {};
+      articleWordCloud(requestData)
+        .then(response => {
+          this.wordCloudData = response.data.data;
+        })
+        .catch(error => {
+          console.log(error);
+        });
     },
     // 获取文章文章列表
     getArticles() {
@@ -189,7 +209,7 @@ export default {
     }
   },
   created() {
-    this.initData();
+    this.initData();    
   }
 };
 </script>
@@ -262,5 +282,10 @@ svg {
     transform: rotate(7920deg);
     transition: all 0.5s;
   }
+}
+.word-cloud {
+  width: 280px;
+  float: right;
+  padding: 10px 0 0 30px;
 }
 </style>

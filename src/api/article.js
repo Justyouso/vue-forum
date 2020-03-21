@@ -33,6 +33,19 @@ export function articleDetail(articleId){
     // 左边data是变量名，右边data是参数名，参数名和变量名相同，可止写成一个
   })
 }
+
+/**
+ * 词云
+ */
+export function articleWordCloud(data){
+  return service.request({
+    method: "get",
+    url: "/article/wordcloud",
+    params:data
+    // 左边data是变量名，右边data是参数名，参数名和变量名相同，可止写成一个
+  })
+}
+
 /**
  * 编辑
  */
