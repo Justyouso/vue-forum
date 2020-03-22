@@ -8,7 +8,7 @@
 </template>
 
 <script>
-import { articleCreate,articleDetail} from '@/api/article'
+import { articleCreate,articleDetail,articleUpdate} from '@/api/article'
 
 export default {
   name: "userWriting",
@@ -52,17 +52,30 @@ export default {
             body_md: markdown,
             body_html: html,
             author_id:this.uid,
-            article_id: this.aritcleInfo.type? this.aritcleInfo.articleId:""
+            article_id: this.aritcleInfo.articleId
           }
-          articleCreate(requestData).then(response =>{
-              let data = response.data
-              this.$message({
-                message:data.message,
-                type:"success"
-              })
-            }).catch(error =>{
-              console.log(error)
-          })
+          // 判断是新增还是修改
+          if (this.aritcleInfo.type!="update"){
+            articleCreate(requestData).then(response =>{
+                let data = response.data
+                this.$message({
+                  message:data.message,
+                  type:"success"
+                })
+              }).catch(error =>{
+                console.log(error)
+            })
+          }else{
+             articleUpdate(requestData).then(response =>{
+                let data = response.data
+                this.$message({
+                  message:data.message,
+                  type:"success"
+                })
+              }).catch(error =>{
+                console.log(error)
+            })
+          }
       }
     },
     created(){
