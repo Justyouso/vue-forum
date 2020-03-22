@@ -108,5 +108,6 @@ export default {
   font-weight: 900;
   font-size: 16px;
   color:$navColor;
+  border-bottom: solid #d4dae7 1px;
 }
 </style>

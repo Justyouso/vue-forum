@@ -40,7 +40,7 @@
       <!-- 展现主体 -->
       <div class="home-content home-head">
         <div v-if="childFlag == 'articles'">
-          <Articles />
+          <Articles :user="userinfo.uid" />
         </div>
         <div v-else-if="childFlag=='followed'">
           <Follow active="first" />
@@ -57,18 +57,24 @@
         <p>个人介绍</p>
         {{authorData.about_me}}
       </div>
+       <!-- 词云 -->
+      <div v-if="wordCloudData.length" class="word-cloud">
+        <wordCloud :data="wordCloudData" :size-range="[10, 30]" />
+      </div>
     </div>
+   
   </div>
 </template>
 
 <script>
-import { articleDetail, articleNewList } from "@/api/article";
+import { articleDetail, articleNewList,articleWordCloud } from "@/api/article";
 import { userFollow, userIndex } from "@/api/user";
 import Follow from "./Index/follow";
 import Articles from './Index/articles'
+import wordCloud from "@/views/Article/wordCloud";
 export default {
   name: "userIndex",
-  components: { Follow,Articles },
+  components: { Follow,Articles, wordCloud },
   data() {
     return {
       childFlag: "articles",
@@ -77,14 +83,30 @@ export default {
         type: this.$route.query.type
       },
       follow: false,
-      authorData: {}
+      authorData: {},
+      wordCloudData:[]// 词云
     };
   },
   methods: {
     // 初始化数据
     initData() {
       this.getUserInfo(), this.getAuthorData(this.authorInfo.id);
-      this.getfollow(this.authorInfo.id);
+      this.getfollow(this.authorInfo.id),
+      this.getWordCloud("timestamp")
+    },
+     // 获取词云
+    getWordCloud(order){
+      let requestData = {
+        author:this.authorInfo.id,
+        order:order
+      };
+      articleWordCloud(requestData)
+        .then(response => {
+          this.wordCloudData = response.data.data;
+        })
+        .catch(error => {
+          console.log(error);
+        });
     },
     // 获取作者数据
     getAuthorData(author_id) {
@@ -121,7 +143,7 @@ export default {
       // 用户数据
       (this.userinfo = this.$store.state.userInfo),
         (this.islive = this.$store.state.isLive);
-      // console.log(this.islive);
+      console.log(this.userinfo);
 
       // 作者信息
       this.authorInfo = {
@@ -236,5 +258,10 @@ export default {
     padding: 10px 0 10px 0;
     color: #969696;
   }
+}
+.word-cloud {
+  width: 250px;
+  float: right;
+  padding: 10px 0 0 30px;
 }
 </style>
