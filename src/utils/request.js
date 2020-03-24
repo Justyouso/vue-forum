@@ -2,7 +2,7 @@ import axios from 'axios'
 import { Message } from 'element-ui';
 
 // 获取开发环境中 vue.config.js中的proxy中的target
-const BASEURL =  process.env.NODE_ENV === 'production' ? 'dist' : '/devApi';
+const BASEURL =  process.env.NODE_ENV === 'production' ? '/devApi' : '/devApi';
 // const BASEURL = "http://119.3.230.228:8999"
 console.log(BASEURL)
 // 创建axios
