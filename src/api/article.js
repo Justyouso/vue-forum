@@ -29,7 +29,7 @@ export function articleCreate(data){
 export function articleUpdate(data){
   return service.request({
     method: "put",
-    url: `/article/${data.articleId}`,
+    url: `/article/${data.article_id}`,
     data
     // 左边data是变量名，右边data是参数名，参数名和变量名相同，可止写成一个
   })
