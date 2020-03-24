@@ -26,7 +26,7 @@
             </div>
           </div>
         </div>
-        <div class="btn pull-left" v-if="authorInfo.type==1">
+        <div class="btn pull-left" v-if="authorInfo.type!=2">
           <el-button
             native-type="button"
             :class="follow?'el-icon-close':'el-icon-plus'"
@@ -157,7 +157,8 @@ export default {
       if (this.checkUser()) {
         let requestData = {
           user: this.userinfo.uid,
-          author: this.article.author_id
+          // author: this.article.author_id
+          author: this.authorInfo.id
         };
         // follow=true时，说明用户已关注该作者，所以type=0，做取消关注操作
         requestData.type = follow ? 0 : 1;

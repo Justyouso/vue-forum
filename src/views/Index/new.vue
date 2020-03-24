@@ -18,7 +18,7 @@
                   <router-link
                     tag="a"
                     class="author-box"
-                    :to="`/infoCenter/detail/${scope.row.author_id}`"
+                    :to="`/userIndex/${scope.row.author_id}`"
                   >{{scope.row.author}}</router-link>
                   <svg-icon iconClass="read" className="read" />
                   <span class="author-box">{{scope.row.read}}</span>
@@ -59,8 +59,12 @@
             <el-table-column>
               <template slot-scope="scope">
                 <!-- 作者名称 -->
-                <el-button class="author-wrap" type="text">{{scope.row.username}}</el-button>
-
+                <!-- <el-button class="author-wrap" type="text">{{scope.row.username}}</el-button> -->
+                <router-link
+                    tag="a"
+                    class="author-wrap"
+                    :to="`/userIndex/${scope.row.id}`"
+                >{{scope.row.username}}</router-link>
                 <!-- 关注 -->
                 <el-button
                   v-if="scope.row.follow"
