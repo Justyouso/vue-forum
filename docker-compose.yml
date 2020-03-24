@@ -7,4 +7,4 @@ services:
     ports:
       - "8998:80"
     volumes:
-      - "/workspace/project/vue_forum/dist:/usr/share/nginx/html"
+      - "/workspace/project/vue-forum/dist:/usr/share/nginx/html"
