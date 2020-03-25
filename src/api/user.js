@@ -63,3 +63,15 @@ export function userIndexFollows(data){
     params:data
   })
 }
+
+/**
+ * 最热用户列表
+ */
+export function userHotList(data){
+  return service.request({
+    method: "get",
+    url: "/user/hot/list",
+    params:data
+    // 左边data是变量名，右边data是参数名，参数名和变量名相同，可止写成一个
+  })
+}

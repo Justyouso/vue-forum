@@ -59,9 +59,27 @@ export function articleWordCloud(data){
 }
 
 /**
- * 编辑
+ * 最热文章列表
  */
-
+export function articleHotList(data){
+  return service.request({
+    method: "get",
+    url: "/article/hot/list",
+    params:data
+    // 左边data是变量名，右边data是参数名，参数名和变量名相同，可止写成一个
+  })
+}
+/**
+ * 最热文章列表词云
+ */
+export function articleHotWordCloud(data){
+  return service.request({
+    method: "get",
+    url: "/article/hot/wordcloud",
+    params:data
+    // 左边data是变量名，右边data是参数名，参数名和变量名相同，可止写成一个
+  })
+}
 /**
 * 删除
 */
