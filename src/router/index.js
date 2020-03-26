@@ -128,8 +128,34 @@ const routes = [
         component: () => import("../views/Article/detail.vue")
       }
     ]
+  },
+  // 搜索
+  {
+    path: "/search",
+    name: "Search",
+    hidden:true,
+    meta: {
+      name: '搜索',
+    },
+    component: Layout,
+    // 在父component中（Layout/index）会展示children中的第一个
+    children: [
+      {
+        path: "/index/search",
+        name: "IndexSearch",
+        meta: {
+          name: '搜索'
+        },
+        component: () => import("../views/Search/index.vue")
+      }
+    ]
   }
 ];
+
+// const routerPush = VueRouter.prototype.push
+// VueRouter.prototype.push = function push(location){
+//   return routerPush.call(this,location).catch(error=>error)
+// }
 
 const router = new VueRouter({
   routes

@@ -17,21 +17,34 @@
             <svg-icon iconClass="attention" className="attention" />关注
           </router-link>
         </div>
+        <div class="pull-left">
+          <div :style="{display: 'inline-block'}">
+            <el-input
+              round
+              size="medium"
+              v-model="inputValue"
+              placeholder="搜索"
+              @focus="searchBtnColor= '#1D7BDE'"
+              @blur="searchBtnColor= '#C0C4CC'"
+              @keyup.enter.native="handleSearch"
+    
+            >
+              <span slot="suffix" class="el-icon-search" @click="handleSearch" >
+
+              </span>
+              <!-- <svg-icon
+                solt="suffix"
+                iconClass="search"
+                className="search"
+                :style="{color:searchBtnColor,cursor: 'pointer'}"
+                @click="handleSearch"
+              /> -->
+            </el-input>
+          </div>
+        </div>
       </div>
     </div>
     <div class="pull-right">
-      <!-- <div class="pull-left">
-        <template>
-          <el-select
-            v-model="value"
-            filterable
-            remote
-            placeholder="请输入关键词"
-            :remote-method="remoteMethod"
-            :loading="loading"
-          ></el-select>
-        </template>
-      </div>-->
       <div v-if="islive" class="user-info pull-left">
         <template v-for="(item,index) in routers">
           <el-dropdown
@@ -77,7 +90,9 @@ export default {
   name: "Header",
   data() {
     return {
-      routers: this.$router.options.routes
+      routers: this.$router.options.routes,
+      inputValue:"",
+      searchBtnColor: '#C0C4CC'
     };
   },
   methods: {
@@ -101,6 +116,23 @@ export default {
           type:2
         }
       });
+    },
+    handleSearch(){
+      if (!this.inputValue){
+        this.$message({
+          message:"请输入关键词",
+          type:"warning"
+        })
+      }else{
+        this.$router.push({
+          name: "IndexSearch",
+          params:{
+            keywords:this.inputValue
+          }
+        })
+        console.log("搜索");
+        console.log(this.inputValue);
+      }
     }
   },
   created() {
