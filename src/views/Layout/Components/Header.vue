@@ -9,7 +9,7 @@
       <div class="header-mid pull-right">
         <!-- <div class="mid-wrap pull-left"> -->
         <router-link class="mid-wrap pull-left" to="/indexFound">
-          <svg-icon iconClass="find" className="find" />发现
+          <svg-icon iconClass="find" className="find" />推荐
         </router-link>
         <!-- </div> -->
         <div class="mid-wrap pull-left">
@@ -212,6 +212,7 @@ export default {
 .header-mid {
   padding: 0 32px;
   font-size: 18px;
+  // font-weight: 550;
   cursor: pointer;
   svg {
     margin-bottom: -10px;
