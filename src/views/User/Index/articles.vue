@@ -94,14 +94,14 @@ export default {
         author:this.authorId,
         order:sortFields
       };
-    // 初始化文章列表
-    articleNewList(requestData)
-      .then(response => {
-        this.articlesData = response.data.data;
-      })
-      .catch(error => {
-        console.log(error);
-      });
+      // 初始化文章列表
+      articleNewList(requestData)
+        .then(response => {
+          this.articlesData = response.data.data;
+        })
+        .catch(error => {
+          console.log(error);
+        });
     },
     handleClick(tab, event) {
       if (tab.name=="second"){

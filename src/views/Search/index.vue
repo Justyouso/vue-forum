@@ -94,8 +94,12 @@
       <div class="pull-right pageination">
           <el-pagination
             background
-            layout="prev, pager, next"
-            :total="1000">
+            @current-change="handleCurrentChange" 
+            :current-page.sync="currentPage" 
+            :page-size="10"
+            layout="total, prev, pager, next"
+            :total.sync="totalpage"
+          >
           </el-pagination>
       </div>
 
@@ -104,31 +108,15 @@
 </template>
 
 <script>
+import { articleSearch,userSearch } from "@/api/search";
   export default {
     data() {
       return {
+        currentPage: 1,
+        totalpage: 0,
         keywords: this.$route.params.keywords,
         flag:"articles",
-        articlesData:[
-          {
-            author:"justyouso",
-            author_id: 8,
-            comments: 0,
-            id: "29",
-            read: 7,
-            summary: "你好我是测试es",
-            title: "测试提交es",
-          },
-          {
-            author:"justyouso",
-            author_id: 8,
-            comments: 0,
-            id: "29",
-            read: 7,
-            summary: "你好我是测试es",
-            title: "测试提交es",
-          }
-        ],
+        articlesData:[],
         usersData:[
           {
             articles: 0,
@@ -143,21 +131,52 @@
       }
     },
     methods: {
-      getArticles(){
-        this.flag="articles"
-        console.log("文章");
-        console.log(this.keywords);
-        
+      // 获取文章列表
+      getArticles(page){
+        let requestData = {
+          keywords:this.keywords,
+          page:page,
+        };
+        articleSearch(requestData)
+          .then(response => {
+            this.articlesData = response.data.data;
+            this.totalpage = response.data.total;
+          })
+          .catch(error => {
+            console.log(error);
+          });
+        },
+      getUsers(page){
+         let requestData = {
+          keywords:this.keywords,
+          page:page
+        };
+        userSearch(requestData)
+          .then(response => {
+            this.usersData = response.data.data;
+            this.totalpage = response.data.total;
+          })
+          .catch(error => {
+            console.log(error);
+          });
+
+          this.flag="users"
+          console.log("用户");
+          console.log(this.keywords);
       },
-      getUsers(){
-        this.flag="users"
-        console.log("用户");
-        console.log(this.keywords);
+      // 改变页数
+      handleCurrentChange(val) {
+        if (this.flag=="articles"){
+            this.getArticles(val)
+        }else{
+            this.getUsers(val)
+        }
       }
+
     },
     created(){
       this.keywords= this.$route.params.keywords,
-      this.getArticles()
+      this.getArticles(this.currentPage)
     }
   }
 
