@@ -26,7 +26,7 @@
             </div>
           </div>
         </div>
-        <div class="btn pull-left" v-if="authorInfo.type!=2">
+        <div class="btn pull-left" v-if="userId!=userinfo.uid">
           <el-button
             native-type="button"
             :class="follow?'el-icon-close':'el-icon-plus'"
@@ -34,7 +34,7 @@
             :type="follow ? '':'success'"
             round
             @click="followed(follow)"
-          >{{follow ? '取消关注':'关注'}}</el-button>
+          >{{follow ? '取消':'关注'}}</el-button>
         </div>
       </div>
       <!-- 展现主体 -->
@@ -78,10 +78,10 @@ export default {
   data() {
     return {
       childFlag: "articles",
-      authorInfo: {
-        id: this.$route.params.userId,
-        type: this.$route.query.type
-      },
+      userId:this.$route.params.userId,
+      // authorInfo: {
+      //   id: this.$route.params.userId,
+      // },
       follow: false,
       authorData: {},
       wordCloudData:[]// 词云
@@ -90,14 +90,14 @@ export default {
   methods: {
     // 初始化数据
     initData() {
-      this.getUserInfo(), this.getAuthorData(this.authorInfo.id);
-      this.getfollow(this.authorInfo.id),
+      this.getUserInfo(), this.getAuthorData(this.userId);
+      this.getfollow(this.userId),
       this.getWordCloud("timestamp")
     },
      // 获取词云
     getWordCloud(order){
       let requestData = {
-        author:this.authorInfo.id,
+        author:this.userId,
         order:order
       };
       articleWordCloud(requestData)
@@ -146,10 +146,7 @@ export default {
       console.log(this.userinfo);
 
       // 作者信息
-      this.authorInfo = {
-        id: this.$route.params.userId,
-        type: this.$route.query.type
-      };
+      this.userId = this.$route.params.userId
     },
     // 关注和取消关注
     followed(follow) {
@@ -158,7 +155,7 @@ export default {
         let requestData = {
           user: this.userinfo.uid,
           // author: this.article.author_id
-          author: this.authorInfo.id
+          author: this.userId
         };
         // follow=true时，说明用户已关注该作者，所以type=0，做取消关注操作
         requestData.type = follow ? 0 : 1;
@@ -175,11 +172,8 @@ export default {
     // 检查用户是否登录
     checkUser() {
       if (this.islive) {
-        console.log(this.islive);
-
         return true;
       } else {
-        console.log(this.islive);
         this.$router.push({
           name: "Login"
         });
@@ -187,7 +181,6 @@ export default {
     },
     handleChild(flag) {
       this.childFlag = flag;
-      console.log(this.childFlag);
     }
   },
   created() {

@@ -6,11 +6,11 @@
           <el-menu
             default-active="1"
             class="el-menu-vertical-demo">
-              <el-menu-item index="1" @click="getArticles()">
+              <el-menu-item index="1" @click="getArticles(1)">
                 <i class="el-icon-s-order icon"></i>
                 <span slot="title">文章</span>
               </el-menu-item>
-              <el-menu-item index="2" @click="getUsers()">
+              <el-menu-item index="2" @click="getUsers(1)">
                 <i class="el-icon-user-solid icon"></i>
                 <span slot="title">用户</span>
               </el-menu-item>
@@ -71,7 +71,7 @@
                         粉丝 {{scope.row.fans}}
                       </div>
                       <div class="meta-bolck pull-left">
-                        <router-link tag="a" :to="`/userIndexFollow/`">文章 {{scope.row.articles}}</router-link>
+                        文章 {{scope.row.articles}}
                       </div>
                     </div>
                   </div>
@@ -83,7 +83,7 @@
                       :type="scope.row.is_followed ? '':'success'"
                       round
                       @click="followed(scope.$index,scope.row)"
-                    >{{scope.row.is_followed ? '取消关注':'关注'}}</el-button>
+                    >{{scope.row.is_followed ? '取消':'关注'}}</el-button>
                   </div>
                 </div>
               </template>
@@ -109,30 +109,31 @@
 
 <script>
 import { articleSearch,userSearch } from "@/api/search";
+import { userFollow } from "@/api/user";
   export default {
+    activated: function() {
+    this.getCase()
+  },
+
     data() {
       return {
         currentPage: 1,
         totalpage: 0,
-        keywords: this.$route.params.keywords,
+        keywords: this.$route.query.keywords,
         flag:"articles",
         articlesData:[],
-        usersData:[
-          {
-            articles: 0,
-            fans: 2,
-            followed: 0,
-            id: 10,
-            is_followed: true,
-            name: "wc",
-            about_me:"楚虽三户，亡秦必楚"
-          }
-        ]
+        usersData:[]
       }
     },
     methods: {
+       // 获取基础信息
+      getUserInfo() {
+        (this.userInfo = this.$store.state.userInfo),
+          (this.islive = this.$store.state.isLive);
+      },
       // 获取文章列表
       getArticles(page){
+        this.flag="articles"
         let requestData = {
           keywords:this.keywords,
           page:page,
@@ -147,9 +148,11 @@ import { articleSearch,userSearch } from "@/api/search";
           });
         },
       getUsers(page){
-         let requestData = {
+        this.flag="users"
+        let requestData = {
           keywords:this.keywords,
-          page:page
+          page:page,
+          user:this.userInfo.uid,
         };
         userSearch(requestData)
           .then(response => {
@@ -159,10 +162,6 @@ import { articleSearch,userSearch } from "@/api/search";
           .catch(error => {
             console.log(error);
           });
-
-          this.flag="users"
-          console.log("用户");
-          console.log(this.keywords);
       },
       // 改变页数
       handleCurrentChange(val) {
@@ -171,13 +170,60 @@ import { articleSearch,userSearch } from "@/api/search";
         }else{
             this.getUsers(val)
         }
+      },
+      // 关注和取消关注
+      followed(index, author) {
+        // 先判断是否登录
+        if (this.checkUser()) {
+          let requestData = {
+            user: this.userInfo.uid,
+            author: author.id
+          };
+          
+          // follow=true时，说明用户已关注该作者，所以type=0，做取消关注操作
+          requestData.type = author.is_followed ? 0 : 1;
+          userFollow(requestData)
+            .then(response => {
+              // follow=true，说明请求做的是取消关注操作，说明此时页面上应该显示‘关注’，则改变follow的值为false
+              author.is_followed = author.is_followed ? false : true;
+              // 修改数组中的值
+              this.$set(this.usersData, index, author);
+              
+            })
+            .catch(error => {
+              console.log(error);
+            });
+        }
+      },
+      // 检查用户是否登录
+      checkUser() {
+        if (this.islive) {
+          return true;
+        } else {
+          this.$router.push({
+            name: "Login"
+          });
+        }
       }
-
     },
     created(){
-      this.keywords= this.$route.params.keywords,
+      this.keywords= this.$route.query.keywords,
       this.getArticles(this.currentPage)
+      this.getUserInfo()
+    },
+    watch:{
+      // 监听路由的query参数
+      '$route.query.keywords'(to, from) {
+        this.keywords= this.$route.query.keywords,
+        this.currentPage= 1 
+        if (this.flag=="articles"){
+          this.getArticles(this.currentPage)
+        }else{
+          this.getUsers(this.currentPage)
+        }
+      }
     }
+
   }
 
 </script>

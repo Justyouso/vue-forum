@@ -111,9 +111,6 @@ export default {
         name: command,
         params:{
           userId:this.userinfo.uid
-        },
-        query:{
-          type:2
         }
       });
     },
@@ -126,12 +123,10 @@ export default {
       }else{
         this.$router.push({
           name: "IndexSearch",
-          params:{
+          query:{
             keywords:this.inputValue
           }
         })
-        console.log("搜索");
-        console.log(this.inputValue);
       }
     }
   },

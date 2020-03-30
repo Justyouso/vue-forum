@@ -12,16 +12,7 @@
                     <div class="follow">
                       <div class="fol-left pull-left">
                         <div class="title">
-                          <!-- <el-button type="text" @click="authorClick(scope.row.id)">
-                            {{scope.row.name}}
-                          </el-button> -->
-                          <!-- <router-link tag="a" :to="`/userIndex/${scope.row.id}+'?_='+(new Date).getTime()`">
-                             {{scope.row.name}}
-                          </router-link> -->
-                          <!-- <router-link tag="a" :to="`/userIndex/${scope.row.id}`">
-                             {{scope.row.name}}
-                          </router-link> -->
-                          <router-link tag="a" :to="{path:`/userIndex/${scope.row.id}`,query:{type:1}}" target="_blank">
+                          <router-link tag="a" :to="`/userIndex/${scope.row.id}`" target="_blank">
                              {{scope.row.name}}
                           </router-link>
                         </div>
@@ -45,7 +36,7 @@
                           :type="scope.row.is_followed ? '':'success'"
                           round
                           @click="followed(scope.$index,scope.row)"
-                        >{{scope.row.is_followed ? '取消关注':'关注'}}</el-button>
+                        >{{scope.row.is_followed ? '取消':'关注'}}</el-button>
                       </div>
                     </div>
                   </template>
@@ -64,16 +55,7 @@
                     <div class="follow">
                       <div class="fol-left pull-left">
                         <div class="title">
-                          <!-- <el-button type="text" @click="authorClick(scope.row.id)">
-                            {{scope.row.name}}
-                          </el-button> -->
-                          <!-- <router-link tag="a" :to="`/userIndex/${scope.row.id}+'?_='+(new Date).getTime()`">
-                             {{scope.row.name}}
-                          </router-link> -->
-                          <!-- <router-link tag="a" :to="`/userIndex/${scope.row.id}`">
-                             {{scope.row.name}}
-                          </router-link> -->
-                          <router-link tag="a" :to="{path:`/userIndex/${scope.row.id}`,query:{type:1}}" target="_blank">
+                          <router-link tag="a" :to="`/userIndex/${scope.row.id}`" target="_blank">
                              {{scope.row.name}}
                           </router-link>
                         </div>
@@ -97,7 +79,7 @@
                           :type="scope.row.is_followed ? '':'success'"
                           round
                           @click="followed(scope.$index,scope.row)"
-                        >{{scope.row.is_followed ? '取消关注':'关注'}}</el-button>
+                        >{{scope.row.is_followed ? '取消':'关注'}}</el-button>
                       </div>
                     </div>
                   </template>
@@ -123,17 +105,12 @@ export default {
     return {
       authorId: this.$route.params.userId,
       activeName :this.active,
-      followData: [
-
-      ],
-      // activeName: "first"
+      followData: [],
     };
   },
   methods: {
     initData() {
       this.getUserInfo()
-      console.log(this.activeName);
-      
     },
     // 获取用户和作者基础
     getUserInfo() {
@@ -151,7 +128,6 @@ export default {
       }else{
          this.getFollowData(this.authorId,"fans")
       }
-
       
     },
     authorClick(author_id){
@@ -159,9 +135,6 @@ export default {
       name:"UserIndex",
       params:{
         userId:author_id
-      },
-      query:{
-        type:1
       }
     });
     },
@@ -171,8 +144,6 @@ export default {
       }else{
         this.getFollowData(this.authorId,"fans")
       }
-      // this.getFollowData(this.author_id,"f")
-      // console.log(tab.label, event);
     },
     // 获取作者关注或粉丝数据
     getFollowData(author_id, type) {
