@@ -20,9 +20,9 @@
       <div class="editor">
         <mavon-editor :boxShadow="false" v-html="article.body_html"></mavon-editor>
       </div>
-
-      <div class='markdown-body'>
-        评论:
+      <!-- 评论 -->
+      <div class='markdown-body comment-warp'>
+        <Comment :article="article.id" />
       </div>
     </div>
     <div class="relation_list">
@@ -44,7 +44,7 @@
       </template>
 
     </div>
-    <div  v-if="wordCloudData.length>0" class="word_cloud">
+    <div v-if="wordCloudData.length>0" class="word_cloud pull-right">
       <wordCloud :data="wordCloudData" :size-range="[10, 30]" />
     </div>
   </div>
@@ -54,10 +54,11 @@
 import { articleDetail,articleNewList,articleWordCloud } from "@/api/article";
 import { userFollow } from "@/api/user";
 import wordCloud from "@/views/Article/wordCloud";
+import Comment from "@/views/Comment/index"
 
 export default {
   name: "articleDetail",
-  components: {wordCloud},
+  components: {wordCloud,Comment},
   data() {
     return {
       article: {}, //文章详情
@@ -65,7 +66,7 @@ export default {
       userinfo: {}, // 用户信息
       islive: null ,// 用户是否存在
       articles:[], // 作者相关文章列表
-      wordCloudData:[]// 词云
+      wordCloudData:[],// 词云
     };
   },
   methods: {
@@ -191,6 +192,7 @@ export default {
 @import "@/styles/main.scss";
 @import "@/styles/config.scss";
 .content-detail{
+  // background-color: #fff;
   width: 1000px;
   height: 100%;
   margin: auto;
@@ -238,7 +240,11 @@ export default {
 }
 .word_cloud{
   width: 240px;
-  float: left;
   padding: 10px 0 0 30px;
+}
+.comment-warp{
+  // padding-top: 10px;
+  margin-top: 10px;
+  border: 1px solid #f2f6fc;
 }
 </style>
