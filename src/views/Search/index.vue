@@ -111,9 +111,9 @@
 import { articleSearch,userSearch } from "@/api/search";
 import { userFollow } from "@/api/user";
   export default {
-    activated: function() {
-    this.getCase()
-  },
+  //   activated: function() {
+  //   this.getCase()
+  // },
 
     data() {
       return {

@@ -21,7 +21,7 @@
         <mavon-editor :boxShadow="false" v-html="article.body_html"></mavon-editor>
       </div>
       <!-- 评论 -->
-      <div class='markdown-body comment-warp'>
+      <div v-if="article.id" class='markdown-body comment-warp'>
         <Comment :article="article.id" />
       </div>
     </div>
@@ -244,7 +244,7 @@ export default {
 }
 .comment-warp{
   // padding-top: 10px;
-  margin-top: 10px;
+  // margin-top: 10px;
   border: 1px solid #f2f6fc;
 }
 </style>

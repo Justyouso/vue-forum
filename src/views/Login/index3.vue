@@ -52,9 +52,10 @@ import { reactive, ref, onMounted } from '@vue/composition-api'
 import { stripscript, validateEmailPwdCode } from '@/utils/validate'
 export default {
   name: "login",
-  data(){
-    //邮箱验证
-    var validateEmail=(rule, value, callback)=>{
+  setup(props,{ refs, root }){
+    
+     //邮箱验证
+    let validateEmail = (rule, value, callback) => {
       if (value === '') {
         callback(new Error('请输入邮箱'));
       } else if (!validateEmailPwdCode(value,'email')){ // 验证邮箱各格式
@@ -63,13 +64,14 @@ export default {
         callback();
       }
     };
+
     //用户名验证
-    var validateUsername=(rule, value, callback)=>{
+    let validateUsername = (rule, value, callback) => {
       // 如果模块值为login,则直接通过,因为login没有重复密码
-      if (this.model =='login') {callback();}
+      if (model.value=='login') {callback();}
       //过滤掉特殊字符
       // 重新绑定form表单中的Username
-      this.ruleForm.username = stripscript(value)
+      ruleForm.username = stripscript(value)
       // 将过滤的字符重新赋值给value
       value = stripscript(value)
       if (!value) {
@@ -80,11 +82,12 @@ export default {
         callback();
       }
     };
+
     //密码验证
-    var validatePassword=(rule, value, callback)=>{
+    let validatePassword = (rule, value, callback) => {
       //过滤掉特殊字符
       // 重新绑定form表单中的password
-      this.ruleForm.password = stripscript(value)
+      ruleForm.password = stripscript(value)
       // 将过滤的字符重新赋值给value
       value = stripscript(value)
       if (!value) {
@@ -95,30 +98,31 @@ export default {
         callback();
       }
     };
+
     //重复密码验证
-    var validatePasswords = (rule, value, callback) => {
+    let validatePasswords = (rule, value, callback) => {
       // 如果模块值为login,则直接通过,因为login没有重复密码
-      if (this.model == 'login') {callback();}
+      if (model.value=='login') {callback();}
 
       //过滤掉特殊字符
       // 重新绑定form表单中的passwords
-      this.ruleForm.passwords = stripscript(value)
+      ruleForm.passwords = stripscript(value)
       // 将过滤的字符重新赋值给value
       value = stripscript(value)
       if (!value) {
         return callback(new Error('请输入密码'));
-      }else if (value != this.ruleForm.password){ //验证重复密码
+      }else if (value != ruleForm.password){ //验证重复密码
         callback(new Error('重复密码错误'))
       }else{
         callback();
       }
     };
     //验证码验证
-    var validateCode=(rule, value, callback)=>{
-      if (this.model =='login') {callback();}
+    let validateCode = (rule, value, callback) => {
+      if (model.value=='login') {callback();}
       //过滤掉特殊字符
       // 重新绑定form表单中的code
-      this.ruleForm.code = stripscript(value)
+      ruleForm.code = stripscript(value)
       // 将过滤的字符重新赋值给value
       value = stripscript(value)
       if (value === '') {
@@ -129,177 +133,229 @@ export default {
         callback();
       }
     };
-    return{
-      // 登陆按钮
-      menuTab:[
-        {txt:"登陆",current: false, type:'login'},
-        {txt:"注册",current: false, type:'register'},
-      ],
-      // 模块值
-      model:'login',
-      // 验证码按钮状态和显示文本
-      codeButtonStatus:{
+
+    /**
+     * 声明数据
+     */
+    // 登陆按钮
+    const menuTab = reactive([
+      {txt:"登陆",current: false, type:'login'},
+      {txt:"注册",current: false, type:'register'},
+    ])
+    // 模块值
+    const model= ref('login')
+    // 验证码按钮状态和显示文本
+    const codeButtonStatus = reactive(
+      {
         status: false,
         text: "发送验证码"
-      },
-      // 表单绑定数据
-      ruleForm:{
-        email: '',
-        username:'',
-        password: '',
-        passwords:'',
-        code: ''
-      },
-      // 表单验证
-      rules:{
-        email: [
-          { validator: validateEmail, trigger: 'blur' }
-        ],
-        username: [
-          { validator: validateUsername, trigger: 'blur' }
-        ],
-        password: [
-          { validator: validatePassword, trigger: 'blur' }
-        ],
-        passwords: [
-          { validator: validatePasswords, trigger: 'blur' }
-        ],
-        code: [
-          { validator: validateCode, trigger: 'blur' }
-        ]
-      },
-      // 定时器
-      timer :null,
-    }
-  },
-  methods:{
+      }
+    )
+    // 表单绑定数据
+    const ruleForm = reactive({
+      email: '',
+      username:'',
+      password: '',
+      passwords:'',
+      code: ''
+    })
+    // 表单验证
+    const rules= reactive({
+      email: [
+        { validator: validateEmail, trigger: 'blur' }
+      ],
+      username: [
+        { validator: validateUsername, trigger: 'blur' }
+      ],
+      password: [
+        { validator: validatePassword, trigger: 'blur' }
+      ],
+      passwords: [
+        { validator: validatePasswords, trigger: 'blur' }
+      ],
+      code: [
+        { validator: validateCode, trigger: 'blur' }
+      ]
+    })
+    // 倒计时变量
+    const timer = ref(null)
+/***************************************************************************** */
+
+    /**
+     * 声明函数
+     * 1. 尽量提出公共方法，一个方法只一件事
+     */
     // 切换登陆和注册按钮
-    toggleMenu(data){
+    const toggleMenu = (data =>{
       //初始化menuTab中的所有数据为false，for循环
-      this.menuTab.forEach(elem => {
+      menuTab.forEach(elem => {
         elem.current=false
       });
       //添加高光
       data.current=true
       //改变model值
-      this.model=data.type
+      model.value =data.type
       // 重置form表单
-      this.resetForm()
+      resetForm()
       // 发送验证码后点击切换按钮，需要清除定时器和更改验证码状态
-      this.clearCountDown()
-    },
+      clearCountDown()
+    })
     // 重置form表单
-    resetForm(){
-      this.$refs['loginForm'].resetFields();
-    },
+    const resetForm = (() =>{
+      refs.loginForm.resetFields();
+    })
+
     // 更新验证码按钮信息
-    updateCodeButtonStatus(params){
-      this.codeButtonStatus.status = params.status
-      this.codeButtonStatus.text = params.text
-    },
+    const updateCodeButtonStatus = ((params) =>{
+      codeButtonStatus.status = params.status
+      codeButtonStatus.text = params.text
+    })
+
     // 获取验证码
-    getSms(){
+    const getSms = (()=>{
       // 验证邮箱
-      if (this.ruleForm.email == ''){
-        this.$message.error("邮箱不能为空!")
+      if (ruleForm.email == ''){
+        root.$message.error("邮箱不能为空!")
         return false
       }
       // 验证邮箱格式
-      if (!validateEmailPwdCode(this.ruleForm.email,'email')){
-        this.$message.error("邮箱格式错误!")
+      if (!validateEmailPwdCode(ruleForm.email,'email')){
+        root.$message.error("邮箱格式错误!")
         return false
       }
 
       //验证码按钮禁用和显示文本
-      this.updateCodeButtonStatus({status:true,text:"发送中"})
+      updateCodeButtonStatus({status:true,text:"发送中"})
       
       // 请求接口
-      let requestData = {email: this.ruleForm.email, module: this.model}
+      let requestData = {email: ruleForm.email, module: model.value}
       GetSms(requestData).then(resoponse =>{
         let data = resoponse.data
-        this.$message({
+        root.$message({
           message:data.message,
           type:"success"
         })
         // 调用定时器，倒计时
-        this.countDown(60)
+        countDown(60)
       }).catch(error =>{
-        this.updateCodeButtonStatus({status:false,text:"发送验证码"})
+        updateCodeButtonStatus({status:false,text:"发送验证码"})
         console.log(error)
       })
-    },
+    })
+
     // 倒计时
-    countDown(number){
+    const countDown= ((number) =>{
       // setTimeout 只会执行一次
       // setInterval 不断执行，需要条件才会停止
 
       // 判断定时器是否存在，若有则先清除，为了防止定时器多次出现
-      if(this.timer){ clearInterval(this.timer)}
+      if(timer.value){ clearInterval(timer.value)}
       // 添加 定时器
-      this.timer = setInterval(() =>{
+      timer.value = setInterval(() =>{
         number-- 
         if (number === 0){
-          clearInterval(this.timer)
-          this.updateCodeButtonStatus({status:false,text:"重新发送"})
+          clearInterval(timer.value)
+          updateCodeButtonStatus({status:false,text:"重新发送"})
         }else{
-          this.updateCodeButtonStatus({status:true,text:`倒计时${number}秒`})
+          updateCodeButtonStatus({status:true,text:`倒计时${number}秒`})
         }
       },1000)
-    },
+    })
+
     // 点击注册时跳转登陆清除倒计时以及将验证码恢复初始状态
-    clearCountDown(){
-      this.updateCodeButtonStatus({status:false,text:"获取验证码"})
-      clearInterval(this.timer)
-    },
+    const clearCountDown = (() =>{
+      updateCodeButtonStatus({status:false,text:"获取验证码"})
+      clearInterval(timer.value)
+    })
+
     // 提交表单
-    submitForm(formName){
-      this.$refs[formName].validate((valid) => {
+    const submitForm = (formName =>{
+      refs[formName].validate((valid) => {
         if (valid) {
           // 判断是登陆还是注册 
-          this.model === 'login' ? this.login():this.register() 
+          model.value === 'login' ? login():register() 
         } else {
           console.log('error submit!!');
           return false;
         }
       })
-    },
+    })
+
     // 登陆操作
-    login(){
+    const login= (() =>{
       let requestData = {
-        email: this.ruleForm.email,
-        password: this.ruleForm.password,
-      }
+            email: ruleForm.email,
+            password: ruleForm.password,
+          }
       Login(requestData).then(response =>{
+
         let data = response.data.data
-        this.$store.commit('SET_USERINFO',data)
-        this.$store.commit('SET_ISLIVE',true)
+        console.log(data);
+        
+        root.$store.commit('SET_USERINFO',data)
+        root.$store.commit('SET_ISLIVE',true)
+        // root.$message({
+        //   message:data.message,
+        //   type:"success"
+        // })
         // 清除验证码按钮和倒计时
-        this.clearCountDown()
+        clearCountDown()
         // 跳转到最新文章
-        this.$router.push({
+        root.$router.push({
           name: "IndexNew"
         })
       }).catch(error =>{
         console.log(error)
       })
-    },
+    })
+
     // 注册操作
-    register(){
+    const register= (() =>{
       let requestData = {
-            email: this.ruleForm.email,
-            username:this.ruleForm.username,
-            password: this.ruleForm.password,
-            code: this.ruleForm.code,
+            email: ruleForm.email,
+            username:ruleForm.username,
+            password: ruleForm.password,
+            code: ruleForm.code,
             module: 'register'
           }
+      // console.log(menuTab[0])
+      // toggleMenu(menuTab[0])
       Register(requestData).then(responce =>{
+        // let data = resoponse.data
+        // root.$message({
+        //   message:data.message,
+        //   type:"success"
+        // })
         // 清除输入框内容
-        this.toggleMenu(this.menuTab[0])
+        toggleMenu(menuTab[0])
+       
         // 清除验证码按钮和倒计时
-        this.clearCountDown()
+        clearCountDown()
       }).catch(error =>{
 
       })
+    })
+/*********************************************************************************** */
+    /**
+     * 生命周期
+     */
+    // 挂载完成后
+    onMounted(() =>{
+   
+    })
+  
+    /**
+     * 返回数据
+     */
+    return {
+      menuTab,
+      model,
+      codeButtonStatus,
+      ruleForm,
+      rules,
+      toggleMenu,
+      submitForm,
+      getSms
     }
   },
 };

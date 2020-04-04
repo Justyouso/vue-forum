@@ -76,7 +76,7 @@
         </router-link>
       </div>
       <div class="header-icon pull-left">
-        <router-link class="login-register" :to="islive?'/userWriting':'/login'">
+        <router-link class="login-register" :to="islive?`/userWriting/${userinfo.uid}`:'/login'">
           <el-button type="danger" class="el-icon-edit" round size="medium">写文章</el-button>
         </router-link>
       </div>
@@ -104,6 +104,10 @@ export default {
     getUserInfo() {
       (this.userinfo = this.$store.state.userInfo),
         (this.islive = this.$store.state.isLive);
+      console.log(this.userinfo );
+      console.log(this.islive);
+      
+      
     },
     // 跳转页面
     handleCommand(command) {
@@ -133,40 +137,6 @@ export default {
   created() {
     this.initData();
   }
-
-  // setup(props,{ root }) {
-  //   const userinfo = root.$store.state.userInfo
-
-  //  // 获取所有路由
-  //   const routers = reactive(root.$router.options.routes);
-
-  //   console.log(userinfo.role);
-  // /**
-  //  * 函数
-  //  */
-  //   // 跳转页面
-  //   const handleCommand = (command) =>{
-  //       root.$router.push({
-  //         name: command
-  //       })
-  //     }
-  //   // const username = computed(()=>{
-  //   //   if (!userinfo.username){
-  //   //     return true
-  //   //   }else{
-  //   //     return false
-  //   //   }
-  //   // }
-
-  //   // )
-  //  return {
-  //   userinfo,
-  //   routers,
-  //   handleCommand,
-  //   // username
-  //  }
-
-  // }
 };
 </script>
 

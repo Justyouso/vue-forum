@@ -61,16 +61,18 @@ const routes = [
         component: () => import("../views/User/setting.vue")
       },
       {
-        path: "/userWriting/:userId",
-        name: "UserWriting",
+        path: "/user/logout",
+        name: "Logout",
         meta: {
-          name: '写文章'
+          name: '登出'
         },
-        component: () => import("../views/User/writing.vue")
+        redirect: "/login",
+        // component: () => import("../views/Login/index.vue")
       }
-
     ]
   },
+
+
   // 首页
   {
     path: "/index",
@@ -105,6 +107,14 @@ const routes = [
           name: '关注'
         },
         component: () => import("../views/Index/attention.vue")
+      },
+      {
+        path: "/userWriting/:userId",
+        name: "UserWriting",
+        meta: {
+          name: '写文章'
+        },
+        component: () => import("../views/User/writing.vue")
       }
     ]
   },
