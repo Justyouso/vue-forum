@@ -43,7 +43,7 @@
           <Articles :user="userinfo.uid" />
         </div>
         <div v-else-if="childFlag=='followed'">
-          <Follow active="first" />
+          <Follow  active="first" />
         </div>
         <div v-else>
           <Follow active="second" />

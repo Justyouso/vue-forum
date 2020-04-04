@@ -29,6 +29,9 @@
                   </el-table-column>
               </el-table>
             </template>
+            <div class="more">
+              <el-button style="width:100%" type="info" round @click="onMore('timestamp')">阅读更多</el-button>
+            </div>
           </div>
         </el-tab-pane>
         <!-- 热门 -->
@@ -60,6 +63,9 @@
                   </el-table-column>
               </el-table>
             </template>
+            <div class="more">
+              <el-button style="width:100%" type="info" round @click="onMore('read')">阅读更多</el-button>
+            </div>
           </div>
         </el-tab-pane>
       </el-tabs>
@@ -79,6 +85,8 @@ export default {
   },
   data() {
     return {
+      page:1,
+      per_page:5,
       authorId: this.$route.params.userId,
       activeName :"first",
       articlesData: [],
@@ -86,28 +94,42 @@ export default {
   },
   methods: {
     initData() {
-      this.getArticlesData("timestamp")
+      this.getArticlesData(1,"timestamp")
     },
     // 获取文章文章列表
-    getArticlesData(sortFields) {
+    getArticlesData(page=1,sortFields) {
       let requestData = {
+        page:page,
+        per_page:this.per_page,
         author:this.authorId,
         order:sortFields
       };
       // 初始化文章列表
       articleNewList(requestData)
         .then(response => {
-          this.articlesData = response.data.data;
+          if (response.data.data.length){
+            this.articlesData=this.articlesData.concat(response.data.data)
+          }else{
+            this.$message(
+              {
+                message:'无更多数据',
+                type:'warning'
+              }
+            )
+          }
         })
         .catch(error => {
           console.log(error);
         });
     },
     handleClick(tab, event) {
+      // 切换清空数据
+      this.page=1
+      this.articlesData=[]
       if (tab.name=="second"){
-        this.getArticlesData("read")
+        this.getArticlesData(1,"read")
       }else{
-        this.getArticlesData("timestamp")
+        this.getArticlesData(1,"timestamp")
       }
     },
     articleUpdate(articleId){
@@ -122,6 +144,11 @@ export default {
         }
       });
       console.log("编辑文章");
+    },
+    // 阅读更多
+    onMore(sortFields){
+      this.page = this.page + 1
+      this.getArticlesData(this.page,sortFields)
     }
     
   },
@@ -185,7 +212,9 @@ svg {
   font-size: 16px;
   margin-bottom: -3px;
 }
-
+.more{
+  margin-top:20px;
+}
 // .fol-left {
 //   display: inline-block;
 //   .title {

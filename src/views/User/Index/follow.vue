@@ -4,7 +4,7 @@
       <el-tabs v-model="activeName" @tab-click="handleClick">
         <el-tab-pane label="关注用户" name="first">
           <div class="author-list">
-            <!-- 作者列表 -->
+            <!-- 关注用户列表 -->
             <template>
               <el-table :data="followData" style="width: 100%" :show-header="false">
                 <el-table-column>
@@ -43,11 +43,14 @@
                 </el-table-column>
               </el-table>
             </template>
+            <div class="more">
+              <el-button style="width:100%" type="info" round @click="onMore('followed')">阅读更多</el-button>
+            </div>
           </div>
         </el-tab-pane>
         <el-tab-pane label="粉丝" name="second">
           <div class="author-list">
-            <!-- 作者列表 -->
+            <!-- 粉丝列表 -->
             <template>
               <el-table :data="followData" style="width: 100%" :show-header="false">
                 <el-table-column>
@@ -86,6 +89,9 @@
                 </el-table-column>
               </el-table>
             </template>
+            <div class="more">
+              <el-button style="width:100%" type="info" round @click="onMore('fans')">阅读更多</el-button>
+            </div>
           </div>
         </el-tab-pane>
       </el-tabs>
@@ -103,6 +109,8 @@ export default {
   },
   data() {
     return {
+      page:1,
+      per_page:5,
       authorId: this.$route.params.userId,
       activeName :this.active,
       followData: [],
@@ -124,11 +132,10 @@ export default {
 
       // 获取作者关注或粉丝数据
       if (this.activeName == "first"){
-        this.getFollowData(this.authorId,"followed")
+        this.getFollowData(1,this.authorId,"followed")
       }else{
-         this.getFollowData(this.authorId,"fans")
+         this.getFollowData(1,this.authorId,"fans")
       }
-      
     },
     authorClick(author_id){
       this.$router.push({
@@ -139,22 +146,36 @@ export default {
     });
     },
     handleClick(tab, event) {
+      // 切换清空数据
+      this.page=1
+      this.followData=[]
       if (tab.label =="关注用户"){
-        this.getFollowData(this.authorId,"followed")
+        this.getFollowData(1,this.authorId,"followed")
       }else{
-        this.getFollowData(this.authorId,"fans")
+        this.getFollowData(1,this.authorId,"fans")
       }
     },
     // 获取作者关注或粉丝数据
-    getFollowData(author_id, type) {
+    getFollowData(page,author_id, type) {
       let requestData = {
+        page:page,
+        per_page:this.per_page,
         author_id: author_id,
         type: type,
         user: this.userInfo.uid
       };
       userIndexFollows(requestData)
         .then(response => {
-          this.followData = response.data.data;
+          if (response.data.data.length){
+            this.followData=this.followData.concat(response.data.data)
+          }else{
+            this.$message(
+              {
+                message:'无更多数据',
+                type:'warning'
+              }
+            )
+          }
         })
         .catch(error => {
           console.log(error);
@@ -194,6 +215,11 @@ export default {
         });
       }
     },
+    // 阅读更多
+    onMore(category){
+      this.page = this.page + 1
+      this.getFollowData(this.page,this.authorId,category)
+    }
   },
   created(){
     this.initData()
@@ -204,11 +230,14 @@ export default {
       // immediate: true, // 很重要！！！
       handler (val) {
         this.activeName = val
+        // 切换清空数据
+        this.page=1
+        this.followData=[]
         // 获取作者关注或粉丝数据
         if (this.activeName == "first"){
-          this.getFollowData(this.authorId,"followed")
+          this.getFollowData(1,this.authorId,"followed")
         }else{
-          this.getFollowData(this.authorId,"fans")
+          this.getFollowData(1,this.authorId,"fans")
         }
         
         // console.log('action Value:', val, this.levelPersonal)
@@ -248,5 +277,8 @@ export default {
       padding: 0 10px 0 0;
     }
   }
+}
+.more{
+  margin-top:20px;
 }
 </style>

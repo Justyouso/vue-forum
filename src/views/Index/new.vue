@@ -30,6 +30,9 @@
           </div>
         </el-table>
       </template>
+      <div class="more">
+        <el-button style="width:100%" type="info" round @click="onMore()">阅读更多</el-button>
+      </div>
     </div>
     <!-- 作者列表 -->
     <div class="author-list">
@@ -103,6 +106,7 @@ export default {
   components: { wordCloud },
   data() {
     return {
+      page:1,
       articleData: [], // 文章列表
       authorData: [], // 作者列表
       follow: true, // 关注与否
@@ -115,7 +119,7 @@ export default {
   methods: {
     // 初始化数据
     initData() {
-      this.getArticles(),
+      this.getArticles(1),
       this.getWordCloud(),
       this.getUserInfo();
       this.getAuthors(1, 5);
@@ -132,12 +136,24 @@ export default {
         });
     },
     // 获取文章文章列表
-    getArticles() {
-      let requestData = {};
+    getArticles(page) {
+      let requestData = {
+        page:page
+      };
       // 初始化文章列表
       articleNewList(requestData)
-        .then(response => {
-          this.articleData = response.data.data;
+        .then(response => {          
+          if (response.data.data.length){
+            this.articleData=this.articleData.concat(response.data.data)
+          }else{
+            this.$message(
+              {
+                message:'无更多数据',
+                type:'warning'
+              }
+            )
+          }
+          
         })
         .catch(error => {
           console.log(error);
@@ -210,6 +226,11 @@ export default {
           type: "warning"
         });
       }
+    },
+    // 阅读更多
+    onMore(){
+      this.page = this.page + 1
+      this.getArticles(this.page)
     }
   },
   created() {
@@ -291,5 +312,8 @@ svg {
   width: 280px;
   float: right;
   padding: 10px 0 0 30px;
+}
+.more{
+  margin-top:20px;
 }
 </style>

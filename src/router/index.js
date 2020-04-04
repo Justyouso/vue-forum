@@ -101,7 +101,7 @@ const routes = [
         component: () => import("../views/Index/new.vue")
       },
       {
-        path: "/indexAttention",
+        path: "/indexAttention/:userId",
         name: "IndexAttention",
         meta: {
           name: '关注'

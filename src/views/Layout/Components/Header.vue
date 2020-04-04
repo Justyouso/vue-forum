@@ -7,13 +7,13 @@
         </router-link>
       </div>
       <div class="header-mid pull-right">
-        <!-- <div class="mid-wrap pull-left"> -->
-        <router-link class="mid-wrap pull-left" to="/indexFound">
-          <svg-icon iconClass="find" className="find" />推荐
-        </router-link>
-        <!-- </div> -->
         <div class="mid-wrap pull-left">
-          <router-link class="mid-wrap pull-left" to="/indexAttention">
+          <router-link class="mid-wrap pull-left" to="/indexFound">
+            <svg-icon iconClass="find" className="find" />推荐
+          </router-link>
+        </div>
+        <div v-if="islive" class="mid-wrap pull-left">
+          <router-link class="mid-wrap pull-left" :to="{path:'/indexAttention/'+userinfo.uid}">
             <svg-icon iconClass="attention" className="attention" />关注
           </router-link>
         </div>
@@ -104,10 +104,6 @@ export default {
     getUserInfo() {
       (this.userinfo = this.$store.state.userInfo),
         (this.islive = this.$store.state.isLive);
-      console.log(this.userinfo );
-      console.log(this.islive);
-      
-      
     },
     // 跳转页面
     handleCommand(command) {
