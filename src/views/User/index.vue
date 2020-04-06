@@ -113,7 +113,6 @@ export default {
       userIndex(author_id)
         .then(response => {
           this.authorData = response.data.data;
-          console.log(this.authorData);
         })
         .catch(error => {
           console.log(error);
