@@ -54,6 +54,17 @@ export function userIndex(author_id){
 }
 
 /**
+ * 修改作者数据
+ */
+export function userUpdate(data){
+  return service.request({
+    method: "put",
+    url: `/user/index/${data.id}`,
+    data
+  })
+}
+
+/**
  * 作者关注和粉丝列表
  */
 export function userIndexFollows(data){
