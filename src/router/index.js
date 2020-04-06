@@ -64,7 +64,7 @@ const routes = [
         path: "/user/logout",
         name: "Logout",
         meta: {
-          name: '登出'
+          name: '退出'
         },
         redirect: "/login",
         // component: () => import("../views/Login/index.vue")
