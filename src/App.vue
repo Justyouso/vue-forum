@@ -9,10 +9,6 @@ export default {
   name: 'App',
   // 将store的数据放入sessionStorage
   created () {
-
-    console.log(this.$router);
-    
-
        //在页面加载时读取sessionStorage里的状态信息
     // if (localStorage.getItem("store") ) {
     //     this.$store.replaceState(Object.assign({}, this.$store.state,JSON.parse(localStorage.getItem("store"))))
