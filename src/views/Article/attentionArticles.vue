@@ -20,7 +20,7 @@
                         <div class="title">
                           <router-link
                             tag="a"
-                            :to="`/article/detail/${scope.row.id}`" target="_blank"
+                            :to="`/article/detail/${scope.row.id}`"
                           >{{scope.row.title}}</router-link>
                           <!-- <el-button v-if=Info==user" class="pull-right" icon="el-icon-edit" size="mini" round @click="articleUpdate(scope.row.id)"></el-button>  -->
                         </div>
@@ -54,7 +54,7 @@
                         <div class="title">
                           <router-link
                             tag="a"
-                            :to="`/article/detail/${scope.row.id}`" target="_blank"
+                            :to="`/article/detail/${scope.row.id}`"
                           >{{scope.row.title}}</router-link>
                           <!-- <el-button v-if="authorId==user" class="pull-right" icon="el-icon-edit" size="mini" round @click="articleUpdate(scope.row.id)"></el-button>  -->
                         </div>

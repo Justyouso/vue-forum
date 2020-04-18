@@ -11,7 +11,6 @@
                   tag="a"
                   class="title"
                   :to="`/article/detail/${scope.row.id}`"
-                  target="_blank"
                 >{{scope.row.title}}</router-link>
                 <p>{{scope.row.summary}}</p>
                 <div class="article-table-bottom">

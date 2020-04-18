@@ -29,7 +29,6 @@
                     tag="a"
                     class="title"
                     :to="`/article/detail/${scope.row.id}`"
-                    target="_blank"
                   >{{scope.row.title}}</router-link>
                   <p>{{scope.row.summary}}</p>
                   <div class="article-table-bottom">
@@ -58,7 +57,7 @@
                 <div class="follow">
                   <div class="fol-left pull-left">
                     <div class="title">
-                      <router-link tag="a" :to="{path:`/userIndex/${scope.row.id}`,query:{type:1}}" target="_blank">
+                      <router-link tag="a" :to="{path:`/userIndex/${scope.row.id}`,query:{type:1}}">
                         {{scope.row.name}}
                       </router-link>
                     </div>

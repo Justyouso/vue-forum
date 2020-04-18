@@ -17,12 +17,12 @@
 
         <el-form-item prop="password" class="item-form">
           <label for="password">密码</label>
-          <el-input id="password" type="text" v-model="ruleForm.password" autocomplete="off" minlength="6" maxlength="20"></el-input>
+          <el-input id="password" type="password" v-model="ruleForm.password" autocomplete="off" minlength="6" maxlength="20"></el-input>
         </el-form-item>
 
         <el-form-item prop="passwords" class="item-form" v-show="model === 'register'">
           <label for="passwords" >重复密码</label>
-          <el-input id="passwords" type="text" v-model="ruleForm.passwords" autocomplete="off" minlength="6" maxlength="20"></el-input>
+          <el-input id="passwords" type="password" v-model="ruleForm.passwords" autocomplete="off" minlength="6" maxlength="20"></el-input>
         </el-form-item>
 
         <el-form-item prop="code" class="item-form"  v-show="model === 'register'">
