@@ -302,6 +302,9 @@ export default {
       })
     }
   },
+  created(){
+    this.model = this.$route.query.model
+  }
 };
 </script>
 

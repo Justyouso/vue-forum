@@ -68,10 +68,11 @@
         </template>
       </div>
       <div v-else class="user-info pull-left">
-        <router-link class="login-register" to="/login">
+        <router-link class="login-register" :to="{path:'/login',query: {model: 'login'}}">
           <el-button type="text">登陆</el-button>
         </router-link>
-        <router-link class="login-register" to="/login">
+        <router-link class="login-register" :to="{path:'/login',query: {model: 'register'}}">
+        
           <el-button type="danger" round size="medium">注册</el-button>
         </router-link>
       </div>
