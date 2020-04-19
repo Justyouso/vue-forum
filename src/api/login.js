@@ -38,3 +38,15 @@ export function Register(data){
     // 左边data是变量名，右边data是参数名，参数名和变量名相同，可止写成一个
   })
 }
+
+/**
+* 修改密码
+*/
+export function PwdUpdate(data){
+  return service.request({
+    method: "post",
+    url: "/user/pwd-edit",
+    data
+    // 左边data是变量名，右边data是参数名，参数名和变量名相同，可止写成一个
+  })
+}

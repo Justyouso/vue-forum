@@ -2,30 +2,24 @@
   <div id="login">
     <div class="login-wrap">
       <ul class="menu-tab">
-        <li v-for="item in menuTab" :key="item.id" :class="{'current': item.current}" @click="toggleMenu(item)">{{item.txt}}</li>
+        <li v-for="item in menuTab" :key="item.id" :class="{'current': item.current}">{{item.txt}}</li>
       </ul>
       <el-form :model="ruleForm" status-icon :rules="rules" ref="loginForm" class="login-form" size="medium">
         <el-form-item prop="email" class="item-form">
           <label for="email">邮箱</label>
           <el-input id="email" type="text" v-model="ruleForm.email" autocomplete="off"></el-input>
         </el-form-item>
-
-        <el-form-item prop="username" class="item-form" v-show="model === 'register'">
-          <label for="username" >用户名</label>
-          <el-input id="username" type="text" v-model="ruleForm.username" autocomplete="off" minlength="6" maxlength="20"></el-input>
-        </el-form-item>
-
         <el-form-item prop="password" class="item-form">
           <label for="password">密码</label>
           <el-input id="password" type="password" v-model="ruleForm.password" autocomplete="off" minlength="6" maxlength="20"></el-input>
         </el-form-item>
 
-        <el-form-item prop="passwords" class="item-form" v-show="model === 'register'">
+        <el-form-item prop="passwords" class="item-form">
           <label for="passwords" >重复密码</label>
           <el-input id="passwords" type="password" v-model="ruleForm.passwords" autocomplete="off" minlength="6" maxlength="20"></el-input>
         </el-form-item>
 
-        <el-form-item prop="code" class="item-form"  v-show="model === 'register'">
+        <el-form-item prop="code" class="item-form">
           <label for="code">验证码</label>
           <el-row :gutter="10">
             <el-col :span="15">
@@ -37,9 +31,8 @@
           </el-row> 
         </el-form-item>
 
-        <router-link v-if="model === 'login'" to="/pwd/edit">忘记密码</router-link>
         <el-form-item>
-          <el-button type="danger" @click="submitForm('loginForm')" class="login-btn block">{{ model === 'login' ? "登陆":"注册" }}</el-button>
+          <el-button type="danger" @click="submitForm('loginForm')" class="login-btn block">提交</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -48,7 +41,7 @@
 
 <script>
 import sha1 from 'js-sha1'
-import { GetSms, Register, Login } from '@/api/login'
+import { GetSms, Register, Login,PwdUpdate } from '@/api/login'
 import { reactive, ref, onMounted } from '@vue/composition-api'
 import { stripscript, validateEmailPwdCode } from '@/utils/validate'
 export default {
@@ -133,11 +126,11 @@ export default {
     return{
       // 登陆按钮
       menuTab:[
-        {txt:"登陆",current: false, type:'login'},
-        {txt:"注册",current: false, type:'register'},
+        // {txt:"登陆",current: false, type:'login'},
+        {txt:"修改密码",current: false, type:'register'},
       ],
       // 模块值
-      model:'login',
+      model:'register',
       // 验证码按钮状态和显示文本
       codeButtonStatus:{
         status: false,
@@ -215,7 +208,7 @@ export default {
       this.updateCodeButtonStatus({status:true,text:"发送中"})
       
       // 请求接口
-      let requestData = {email: this.ruleForm.email, module: this.model}
+      let requestData = {email: this.ruleForm.email, module: "forget"}
       GetSms(requestData).then(resoponse =>{
         let data = resoponse.data
         this.$message({
@@ -256,57 +249,36 @@ export default {
     submitForm(formName){
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          // 判断是登陆还是注册 
-          this.model === 'login' ? this.login():this.register() 
+          this.register() 
         } else {
           console.log('error submit!!');
           return false;
         }
       })
     },
-    // 登陆操作
-    login(){
-      let requestData = {
-        email: this.ruleForm.email,
-        password: this.ruleForm.password,
-      }
-      Login(requestData).then(response =>{
-        let data = response.data.data
-        this.$store.commit('SET_USERINFO',data)
-        this.$store.commit('SET_ISLIVE',true)
-        // 清除验证码按钮和倒计时
-        this.clearCountDown()
-        // 跳转到最新文章
-        this.$router.push({
-          name: "IndexNew"
-        })
-      }).catch(error =>{
-        console.log(error)
-      })
-    },
     // 注册操作
     register(){
       let requestData = {
             email: this.ruleForm.email,
-            username:this.ruleForm.username,
             password: this.ruleForm.password,
             code: this.ruleForm.code,
-            module: 'register'
+            module: 'forget'
           }
-      Register(requestData).then(responce =>{
+      PwdUpdate(requestData).then(responce =>{
+        // 清除输入框内容
+        this.toggleMenu(this.menuTab[0])
         // 清除验证码按钮和倒计时
         this.clearCountDown()
+        // 跳转到登陆
+        this.$router.push({
+          name: "Login",
+          query:{"model":"login"}
+        });
       }).catch(error =>{
 
       })
     }
   },
-  created(){
-    this.model = "login"
-    if (this.$route.query.model){
-      this.model = this.$route.query.model
-    }
-  }
 };
 </script>
 

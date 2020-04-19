@@ -22,6 +22,16 @@ const routes = [
     },
     component: () => import("../views/Login/index.vue")
   },
+  {
+    path: "/pwd/edit",
+    name: "PwdEdit",
+    hidden:true,
+    meta: {
+      name: '修改密码'
+    },
+    component: () => import("../views/User/Index/pwdUpdate.vue")
+    // component: () => import("../views/Login/index.vue")
+  },
   // 用户管理
   {
     path: "/user",
@@ -59,6 +69,15 @@ const routes = [
           name: '设置'
         },
         component: () => import("../views/User/setting.vue")
+      },
+      {
+        path: "/user/pwd",
+        name: "PwdUpdate",
+        meta: {
+          name: '修改密码'
+        },
+        component: () => import("../views/User/Index/pwdUpdate.vue")
+        // component: () => import("../views/Login/index.vue")
       },
       {
         path: "/user/logout",
