@@ -37,7 +37,15 @@
               :show-header="false">
               <el-table-column>
                 <template slot-scope="scope">
-                  <div class="username">{{scope.row.author}}</div>
+                  <div class="username">
+                    {{scope.row.author}}
+                    <!-- 自己可以删除评论 -->
+                    <el-button v-if="scope.row.author_id==userInfo.uid" class="pull-right" icon="el-icon-delete" size="mini" round @click="commentDelete(scope,'user',scope.row.author_id)"></el-button> 
+                    <!-- 文章作者可以删除评论 -->
+                    <el-button v-else-if="author==userInfo.uid" class="pull-right" icon="el-icon-delete" size="mini" round @click="commentDelete(scope,'author',author)"></el-button> 
+                    <!-- 管理员或协管员删除评论 -->
+                    <el-button v-else-if="roles.indexOf(userInfo.role)==true" class="pull-right" icon="el-icon-delete" size="mini" round @click="commentDelete(scope,'admin',userInfo.uid)"></el-button> 
+                  </div>
                   <div class="time">{{scope.row.timestamp}}</div>
                   <div class="comment">{{scope.row.body}}</div>
                 </template>
@@ -60,11 +68,14 @@
     </div>  
 </template>
 <script>
-import { commentList,commentPost } from "@/api/comment";
+import { commentList,commentPost,commentDel } from "@/api/comment";
   export default {
     props:{
       article:{
         type:String,
+      },
+      author:{
+        type:Number,
       }
     },
     data() {
@@ -83,7 +94,8 @@ import { commentList,commentPost } from "@/api/comment";
         commentForm: {
           comment: ''
         },
-        commentsData:[]
+        commentsData:[],
+        roles:["Moderator","Administrator"]
       };
     },
     methods: {
@@ -112,6 +124,44 @@ import { commentList,commentPost } from "@/api/comment";
         .catch(error => {
           console.log(error);
         });
+      },
+      // 删除评论
+      commentDelete(comment,userType,author_id){
+        // 三种人可以删除评论：1. 评论者可删除自己评论， 2. 文章作者可删除评论， 3. 管理员或协管员可删除评论
+        let requestData = {
+          commentId:comment.row.id,
+          author:author_id,
+        };
+        // 删除评论
+        commentDel(requestData)
+          .then(response => {
+            this.commentsData.splice(comment.$index,1)
+            if (userType=="user"){
+              this.$message(
+                {
+                  message:'用户删除评论',
+                  type:'success'
+                }
+              )
+            }else if (userType=="author"){
+              this.$message(
+                {
+                  message:'作者删除评论',
+                  type:'success'
+                }
+              )
+            }else{
+              this.$message(
+                {
+                  message:'管理员或协管员删除评论',
+                  type:'success'
+                }
+              )
+            }
+          })
+          .catch(error => {
+            console.log(error);
+          });
       },
       // 改变页数
       handleCurrentChange(val) {
@@ -144,16 +194,8 @@ import { commentList,commentPost } from "@/api/comment";
               .then(response => {
                 //清空输入框
                 this.resetForm(formName)
-                // 修改数组中的值
-                const comment = [{
-                  author:this.userInfo.username,
-                  author_id:this.userInfo.uid,
-                  body:this.commentForm.comment,
-                  article_id:this.article,
-                  timestamp:"刚刚"
-                }]
                 // 将提交的评论放入第一行
-                this.commentsData = comment.concat(this.commentsData)
+                this.commentsData = [response.data.data].concat(this.commentsData)
                 this.totalpage = this.totalpage+1
               })
               .catch(error => {

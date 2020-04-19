@@ -15,6 +15,7 @@
                           tag="a"
                           :to="`/article/detail/${scope.row.id}`"
                         >{{scope.row.title}}</router-link>
+                        <el-button v-if="authorId==user" class="pull-right" icon="el-icon-delete" size="mini" round @click="articleDelete(scope)"></el-button> 
                         <el-button v-if="authorId==user" class="pull-right" icon="el-icon-edit" size="mini" round @click="articleUpdate(scope.row.id)"></el-button> 
                       </div>
                       <p>{{scope.row.summary}}</p>
@@ -49,6 +50,7 @@
                           tag="a"
                           :to="`/article/detail/${scope.row.id}`"
                         >{{scope.row.title}}</router-link>
+                        <el-button v-if="authorId==user" class="pull-right" icon="el-icon-delete" size="mini" round @click="articleDelete(scope)"></el-button> 
                         <el-button v-if="authorId==user" class="pull-right" icon="el-icon-edit" size="mini" round @click="articleUpdate(scope.row.id)"></el-button> 
                       </div>
                       <p>{{scope.row.summary}}</p>
@@ -74,7 +76,7 @@
 </template>
 
 <script>
-import { articleDetail,articleNewList } from "@/api/article";
+import { articleDetail,articleNewList,articleDel } from "@/api/article";
 export default {
   name: "userArticles",
   props:{
@@ -145,6 +147,21 @@ export default {
       });
       console.log("编辑文章");
     },
+
+    articleDelete(article){
+      let requestData = {
+        articleId:article.row.id,
+        author:this.authorId,
+      };
+      // 删除文章
+      articleDel(requestData)
+        .then(response => {
+          this.articlesData.splice(article.$index,1)
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    },
     // 阅读更多
     onMore(sortFields){
       this.page = this.page + 1
@@ -155,23 +172,6 @@ export default {
   created(){
     this.initData()
   },
-  // watch: {
-  //   // 监听从父组件中传来的值
-  //   active: {
-  //     // immediate: true, // 很重要！！！
-  //     handler (val) {
-  //       this.activeName = val
-  //       // 获取作者关注或粉丝数据
-  //       if (this.activeName == "first"){
-  //         this.getFollowData(this.authorId,"followed")
-  //       }else{
-  //         this.getFollowData(this.authorId,"fans")
-  //       }
-        
-  //       // console.log('action Value:', val, this.levelPersonal)
-  //     }
-  //   }
-  // },
 };
 </script>
 
@@ -179,6 +179,9 @@ export default {
 @import "@/styles/main.scss";
 @import "@/styles/config.scss";
 
+.el-icon-edit{
+  margin-left: 20px;
+}
 .icon-title{
   font-size: 15px;
   font-weight: bold;

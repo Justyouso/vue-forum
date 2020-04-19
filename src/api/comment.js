@@ -23,3 +23,14 @@ export function commentPost(data){
   })
 }
 
+/**
+ * 删除评论
+ */
+export function commentDel(data){
+  return service.request({
+    method: "delete",
+    url: `/comment/${data.commentId}`,
+    params:data
+    // 左边data是变量名，右边data是参数名，参数名和变量名相同，可止写成一个
+  })
+}

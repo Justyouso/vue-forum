@@ -22,7 +22,7 @@
       </div>
       <!-- 评论 -->
       <div v-if="article.id" class='markdown-body comment-warp'>
-        <Comment :article="article.id" />
+        <Comment :article="article.id" :author="article.author_id" />
       </div>
     </div>
     <div class="relation_list">
