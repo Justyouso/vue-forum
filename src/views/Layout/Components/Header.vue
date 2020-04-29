@@ -69,7 +69,7 @@
       </div>
       <div v-else class="user-info pull-left">
         <router-link class="login-register" :to="{path:'/login',query: {model: 'login'}}">
-          <el-button type="text">登陆</el-button>
+          <el-button type="text">登录</el-button>
         </router-link>
         <router-link class="login-register" :to="{path:'/login',query: {model: 'register'}}">
         

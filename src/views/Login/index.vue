@@ -37,7 +37,8 @@
           </el-row> 
         </el-form-item>
 
-        <router-link v-if="model === 'login'" to="/pwd/edit">忘记密码</router-link>
+        <router-link v-if="model === 'login'" to="/pwd/edit" style="color:white; font-size:14px">忘记密码</router-link>
+        
         <el-form-item>
           <el-button type="danger" @click="submitForm('loginForm')" class="login-btn block">{{ model === 'login' ? "登陆":"注册" }}</el-button>
         </el-form-item>
@@ -133,7 +134,7 @@ export default {
     return{
       // 登陆按钮
       menuTab:[
-        {txt:"登陆",current: false, type:'login'},
+        {txt:"登录",current: false, type:'login'},
         {txt:"注册",current: false, type:'register'},
       ],
       // 模块值
