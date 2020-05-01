@@ -40,7 +40,7 @@
         <router-link v-if="model === 'login'" to="/pwd/edit" style="color:white; font-size:14px">忘记密码</router-link>
         
         <el-form-item>
-          <el-button type="danger" @click="submitForm('loginForm')" class="login-btn block">{{ model === 'login' ? "登陆":"注册" }}</el-button>
+          <el-button type="danger" @click="submitForm('loginForm')" class="login-btn block">{{ model === 'login' ? "登录":"注册" }}</el-button>
         </el-form-item>
       </el-form>
     </div>
